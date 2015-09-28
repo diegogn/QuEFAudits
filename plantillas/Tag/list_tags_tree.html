@@ -2,13 +2,47 @@
 {% load i18n %}
 {% load mptt_tags %}
 {% block titulo %} {%  trans "Tags Tree" %} {% endblock %}
+{% block style_css %}
+    <style>
+    li{
+        list-style-type: none;
+        cursor: pointer;
+    }
 
+    .father:before{
+        font-family: "Glyphicons Halflings";
+        content: "\e158";
+    }
+</style>
+{% endblock %}
+{% block scripts %}
+$("ul").on("click",function(e){
+    e.stopPropagation();
+	var style = $(this).children().css("display");
+    if(style == 'none'){
+     	   $(this).children().css("display",'block');
+    }else{
+     		$(this).children().css("display",'none');
+    }
+});
+
+$("ul").on("click","li",function(e){
+    e.stopPropagation();
+	var style = $(this).children().css("display");
+    if(style == 'none'){
+     	   $(this).children().css("display",'block');
+    }else{
+     		$(this).children().css("display",'none');
+    }
+});
+    $(".father").children().css("display",'none');
+{% endblock%}
 {% block encabezado %} {%  trans "Tags Tree" %} {% endblock %}
 
 {% block contenido %}
     <ul>
     {% recursetree tags %}
-        <li>
+        <li {% if not node.is_leaf_node %}class="father"{% endif %}>
             {{ node.name }}
             {% if not node.is_leaf_node %}
                 <ul class="children">
