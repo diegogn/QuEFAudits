@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+
+{% block titulo %} Sudida {% endblock %}
+
+{% block encabezado %} Subir Documento {% endblock %}
+
+{% block contenido %}
+
+	  <form action="" class="form-inline" method="post" enctype="multipart/form-data">{% csrf_token %}
+	            {{ form.as_p }}
+	        <input type="submit" value="Submit">
+	    </form>
+
+
+{% endblock %}

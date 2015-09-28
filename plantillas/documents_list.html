@@ -1,0 +1,17 @@
+{% extends "index.html" %}
+{% block titulo %} Preguntas {% endblock %}
+
+{% block encabezado %} Lista de Preguntas {% endblock %}
+
+{% block contenido %}
+
+<div class="table-responsive">
+<table class="table table-bordered">
+  <tr><td><strong>Preguntas</strong></td></tr>
+  {% for documento in documents %}
+  <tr><td>{{documento.filename}}</td><td><a href="{% url 'download' documento.docfile %}">Descargar</a></td></tr>
+  {% endfor %}
+</table>
+</div>
+
+{% endblock %}

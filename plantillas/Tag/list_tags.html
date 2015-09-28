@@ -1,0 +1,77 @@
+{% extends 'list.html' %}
+{% load i18n %}
+{% block scripts %}
+
+    {% if okMessage %}
+        alert('{% trans "Item created succesfully" %}')
+    {% elif not form.is_valid%}
+        $("#myModalForm{{ tag_value }}").modal('show');
+    {% endif %}
+{% endblock %}
+{% block titulo %}{% trans "List Tags" %}{% endblock %}
+{% block encabezado %}{% trans "List Tags" %}{% endblock %}
+{% block heading %}{{ element.name }}{% endblock %}
+{% block body %}
+    {% for children in element.children.all %}
+        {{ children.name }}
+    {% endfor%}
+    {% if element.father_tag %}
+        {% trans "Father Tag" %}: {{ element.father_tag.name }}
+    {% else %}
+        {% trans "Father Tag" %}: {% trans "Root Tag" %}
+    {% endif %}
+    <br>
+    {% if element.item_set.all %}
+    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModal{{ element.id }}">
+        {% trans 'View Items' %}
+    &nbsp;
+    </button>
+    {% endif %}
+    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm{{ element.id }}">
+        {% trans 'Create Item' %}
+    </button>
+
+    <div class="modal fade" id="myModal{{  element.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">{% trans "Tag's Items" %}</div>
+          <div class="modal-body">
+                {% for item in element.item_set.all %}
+                    <li>{{ item.name }} - {{ item.question }} &nbsp;
+                        <a href="{% url 'item_details' item.id %}">{% trans "Details" %}</a></li>
+                {% endfor %}
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="myModalForm{{ element.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">{% trans "Create Item for tag" %}&nbsp;{{ element.name }}</div>
+          <div class="modal-body">
+          <form method="post" action="{% url 'list_tags' element.id %}?page={{ element_page.number }}">
+              {% csrf_token %}
+              {% for field in form %}
+                {{ field.label_tag }} {{ field }}
+                {% if field.errors and element.id == tag_value%}
+                     <br>
+                     <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
+                {% endif %}<br><br>
+              {% endfor %}
+              <input type="submit" value="Crear"/>
+          </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}
+{% block no_found %}{% trans "There are not audits" %}{% endblock %}
+
+

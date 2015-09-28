@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+{% load i18n %}
+{% block titulo %} Listar {% endblock %}
+{% block encabezado %} Listar {% endblock %}
+{{ cont|add:"0" }}
+{% block contenido %}
+    {% for element in element_page%}
+
+        <div class="panel panel-primary col-md-3">
+          <div class="panel-heading">{% block heading %}{% endblock %}</div>
+          <div class="panel-body">
+            {% block body %}{% endblock %}
+          </div>
+        </div>
+        {% if forloop.counter|divisibleby:"4" %}
+            <div class="clearfix"></div>
+        {% endif %}
+        {% empty %}
+            <h5>{% block no_found %}{% endblock %}</h5>
+    {% endfor %}
+    <br>
+    {% if element_page.paginator.num_pages != 1 %}
+        <div class="col-md-12 text-center">
+    <ul class="pagination">
+     {% if element_page.has_previous %}
+            <li><a href="?page={{ element_page.previous_page_number }}">&laquo;</a></li>
+          {% else %}
+            <li class="disabled"><a href="#">&laquo;</a></li>
+     {% endif %}
+      <li><a>Page {{ element_page.number }} of {{ element_page.paginator.num_pages }}.</a></li>
+      {% if element_page.has_next %}
+            <li><a href="?page={{ element_page.next_page_number }}">&raquo;</a></li>
+          {% else %}
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+    </div>
+{% endblock %}

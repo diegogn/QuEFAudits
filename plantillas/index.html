@@ -1,0 +1,112 @@
+{% load i18n %}
+<!DOCTYPE html>
+<html lang='es'>
+<head>
+  <meta charset='utf-8'>
+  <title>{% block titulo %}{% endblock %}</title>
+  {% block style_css %}{% endblock %}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="/static/js/js.cookie.js"></script>
+     <script type="text/javascript">
+
+      $(document).ready(function(){
+        $('#es').click(function() {
+            Cookies.set('django_language','es',{path: '/'});
+            document.location.href = document.location.href;
+            return false;
+        });
+
+        $('#en').click(function() {
+            Cookies.set('django_language','en',{path: '/'});
+            document.location.href = document.location.href;
+            return false;
+        });
+
+          if(Cookies.get('django_language') == 'es'){
+              $('#es').css('background-color','grey');
+          }else{
+               $('#en').css('background-color','grey');
+          }
+          {% block scripts %}{% endblock %}
+      });
+
+      </script>
+</head>
+<body>
+<div class="container">
+  <header>
+	<nav class="navbar navbar-default" role="navigation">
+		<div class="navbar-header">
+			 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+			      <span class="sr-only">Desplegar navegación</span>
+			      <span class="icon-bar"></span>
+			      <span class="icon-bar"></span>
+			      <span class="icon-bar"></span>
+    		 </button>
+		    <a class="navbar-brand" href="{% url 'index' %}"><span class="glyphicon glyphicon-align-justify"></span></a>
+ 		</div>
+		<div class="collapse navbar-collapse navbar-ex1-collapse">
+			<ul class="nav navbar-nav">
+                {% if user and perms.auth.gestor %}
+				<li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+			          {% trans "Audits" %} <b class="caret"></b>
+			        </a>
+			        <ul class="dropdown-menu">
+			          <li><a href="{% url 'create_audit' %}">{% trans "Create Audit" %}</a></li>
+                        <li><a href="{% url 'list_my_audits' %}">{% trans "List Audits" %}</a></li>
+			        </ul>
+                </li>
+                <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                          {% trans "Tags" %} <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                          <li><a href="{% url 'create_tag' %}">{% trans "Create Tag" %}</a></li>
+                            <li><a href="{% url 'list_tags' '' %}">{% trans "List Tags" %}</a></li>
+                        </ul>
+                    </li>
+                {% endif %}
+            {% if user and perms.auth.admin%}
+                    <li><a href="{% url 'create_user' %}">{% trans "Register User" %}</a></li>
+            {% endif %}
+		    </ul>
+		    <ul class="nav navbar-nav navbar-right">
+                <li class="dropdown">
+			        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+			         {% trans "Language"%}<b class="caret"></b>
+			        </a>
+			        <ul class="dropdown-menu">
+			          <li><a href="es" id="es">{% trans "Spanish" %}</a></li>
+                        <li><a href="en" id="en">{% trans "English" %}</a></li>
+			        </ul>
+                </li>
+		    	{% if user.is_authenticated %}
+                     <p class="navbar-text">{% trans 'Welcome' %} {{user.first_name}}</p>
+                     <li><a href="{% url 'logout' %}">{% trans "Log Out" %}</a></li>
+		    	{% else %}
+                     <li><a href="{% url 'login' %}">{% trans "Log In" %}</a></li>
+                {% endif %}
+		    </ul>
+		</div>
+	</nav>
+	
+	<div class="page-header">
+		<h1>{% block encabezado %}{% endblock %}</h1>
+	</div>
+  </header>	
+	{% block contenido %}{% endblock %}
+</div>
+</body>
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted">Bienvenido a Auditorías</p>
+  </div>
+</footer>
+</html>

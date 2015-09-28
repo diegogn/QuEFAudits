@@ -1,0 +1,16 @@
+{% extends 'list.html' %}
+{% load i18n %}
+{% block titulo %}{% trans "List Audits" %}{% endblock %}
+{% block encabezado %}{% trans "List Audits" %}{% endblock %}
+{% block heading %}{{ element.name }}{% endblock %}
+{% block body %}
+    <li>{{ element.creationDate }}</li>
+    <li>{% trans "Auditor" %}: {{ element.auditor.get_full_name }}</li>
+    <li>{% trans "Usuario" %}: {{ element.usuario.get_full_name }}</li>
+    {% for tag in element.tags.all %}
+        <span class="label label-primary">{{ tag.name }}</span>
+        {% empty %}
+        <span class="label hidden"></span>
+    {% endfor%}
+{% endblock %}
+{% block no_found %}{% trans "There are not audits" %}{% endblock %}

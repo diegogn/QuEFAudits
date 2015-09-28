@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+
+{% block titulo %} Registrarse {% endblock %}
+
+{% block encabezado %} Registrarse {% endblock %}
+
+{% block contenido %}
+
+<form method="post" action=''>
+{% csrf_token %}
+
+    <label for="username">{{ form.username.label_tag }}</label>
+    <div id="username">{{ form.username }} <span class='help-block'>{{form.username.help_text}}</span></div>
+    {% if form.username.errors %}
+    <div class="alert alert-danger"><strong>{{form.username.errors|escape}}</strong></div>
+    {% endif %}
+	<br>
+    <label for="password1">{{ form.password1.label_tag }}</label>
+    <div id="password1">{{ form.password1 }}</div>
+    {% if form.password1.errors %}
+    <br>
+    <div class="alert alert-danger"><strong>{{form.password1.errors|escape}}</strong></div>
+    {% endif %}
+	<br>
+    <label for="password2">{{ form.password2.label_tag }}</label>
+    <div id="password2">{{ form.password2 }} <span class='help-block'>{{form.password2.help_text}}</span></div>
+    {% if form.password2.errors %}
+    <div class="alert alert-danger"><strong>{{form.password2.errors|escape}}</strong></div>
+    {% endif %}
+
+<br>
+<input type="submit" value="Registrarse" />
+</form>
+
+{% endblock %}

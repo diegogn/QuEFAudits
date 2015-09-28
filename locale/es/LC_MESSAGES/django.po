@@ -1,0 +1,174 @@
+# -*- encoding: utf-8 -*-
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2015-08-27 16:32+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: .\Audits\forms.py:19
+msgid "Admins"
+msgstr "Administradores"
+
+#: .\Audits\forms.py:20
+msgid "Gestors"
+msgstr "Gestores"
+
+#: .\Audits\forms.py:21
+msgid "Users"
+msgstr "Usuarios"
+
+#: .\Audits\forms.py:22
+msgid "Auditors"
+msgstr "Auditores"
+
+#: .\Audits\forms.py:25 .\Audits\models.py:15 .\Audits\models.py:20
+#: .\Audits\models.py:26 .\Audits\models.py:32 .\Audits\models.py:37
+#: .\Audits\models.py:50 .\Audits\models.py:79 .\Audits\models.py:87
+msgid "Name"
+msgstr "Nombre"
+
+#: .\Audits\forms.py:26 .\Audits\models.py:16 .\Audits\models.py:21
+#: .\Audits\models.py:27 .\Audits\models.py:33
+msgid "Surname"
+msgstr "Apellidos"
+
+#: .\Audits\forms.py:27
+msgid "Email"
+msgstr "Email"
+
+#: .\Audits\forms.py:28
+msgid "Rol"
+msgstr "Rol"
+
+#: .\Audits\models.py:9 .\Audits\models.py:58
+msgid "User"
+msgstr "Usuario"
+
+#: .\Audits\models.py:39
+msgid "Father Tag"
+msgstr "Etiqueta Padre"
+
+#: .\Audits\models.py:51
+msgid "CreationDate"
+msgstr "Fecha de Creacion"
+
+#: .\Audits\models.py:52
+msgid "StartDate"
+msgstr "Fecha de Inicio"
+
+#: .\Audits\models.py:54
+msgid "Regularity"
+msgstr "Regularidad"
+
+#: .\Audits\models.py:55
+msgid "Period"
+msgstr "Periodo"
+
+#: .\Audits\models.py:59
+msgid "Auditor"
+msgstr "Auditor"
+
+#: .\Audits\models.py:60 .\plantillas\index.html:68
+msgid "Tags"
+msgstr "Etiquetas"
+
+#: .\Audits\models.py:64
+msgid "Date"
+msgstr "Fecha"
+
+#: .\Audits\models.py:67
+#, fuzzy
+#| msgid "Item's Tag"
+msgid "Items"
+msgstr "Etiqueta del Item"
+
+#: .\Audits\models.py:71
+msgid "Filename"
+msgstr "Nombre del Archivo"
+
+#: .\Audits\models.py:72
+msgid "File"
+msgstr "Archivo"
+
+#: .\Audits\models.py:80
+msgid "Question"
+msgstr "Pregunta"
+
+#: .\Audits\models.py:81
+msgid "URL"
+msgstr "URL"
+
+#: .\Audits\models.py:83
+#, fuzzy
+#| msgid "Tags"
+msgid "Tag"
+msgstr "Etiquetas"
+
+#: .\Audits\models.py:88
+msgid "Value"
+msgstr "Valor"
+
+#: .\QuEFAudits\settings.py:77 .\plantillas\index.html:86
+msgid "English"
+msgstr "Inglés"
+
+#: .\QuEFAudits\settings.py:78 .\plantillas\index.html:85
+msgid "Spanish"
+msgstr "Español"
+
+#: .\plantillas\Audit\list_audits.html:3 .\plantillas\index.html:62
+msgid "List Audits"
+msgstr "Lista de Auditorías"
+
+#: .\plantillas\Audit\list_audits.html:6
+msgid "There are not audits"
+msgstr "No hay auditorías"
+
+#: .\plantillas\index.html:6 .\plantillas\index.html.py:57
+msgid "Audits"
+msgstr "Auditorías"
+
+#: .\plantillas\index.html:60
+msgid "Create Audit"
+msgstr "Crear Auditoría"
+
+#: .\plantillas\index.html:71
+msgid "Create Tag"
+msgstr "Crear Etiqueta"
+
+#: .\plantillas\index.html:72
+msgid "List Tags"
+msgstr "Lista de Etiquetas"
+
+#: .\plantillas\index.html:76
+msgid "Register User"
+msgstr "Registrar Usuario"
+
+#: .\plantillas\index.html:82
+msgid "Language"
+msgstr "Idioma"
+
+#: .\plantillas\index.html:90
+msgid "Welcome"
+msgstr "Bienvenido"
+
+#: .\plantillas\index.html:91
+msgid "Log Out"
+msgstr "Desconectarse"
+
+#: .\plantillas\index.html:93
+msgid "Log In"
+msgstr "Autenticarse"

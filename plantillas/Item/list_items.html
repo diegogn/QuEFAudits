@@ -1,0 +1,11 @@
+{% extends 'list.html' %}
+{% load i18n %}
+{% block titulo %}{% trans "List Items" %}{% endblock %}
+{% block encabezado %}{% trans "List Items" %}{% endblock %}
+{% block heading %}{{ element.name }}{% endblock %}
+{% block body %}
+    <li>{% trans "Question" %}: {{ element.question }}</li>
+    <li>{% trans "Url" %}: {{ element.url|default:"-"}}</li>
+    <li>{% trans "Tag" %}: <span class="label label-primary">{{ element.tag.name }}</span></li>
+{% endblock %}
+{% block no_found %}{% trans "There are not items" %}{% endblock %}

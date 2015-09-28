@@ -1,0 +1,27 @@
+{% extends "index.html" %}
+
+{% block titulo %} Bienvenido {% endblock %}
+
+{% block encabezado %} Bienvenido {% endblock %}
+
+{% block contenido %}
+
+<form method="post" action=''>
+{% csrf_token %}
+   <label for="nombre">{{ form.nombre.label_tag }}</label>
+    <div id="nombre">{{ form.nombre }} <span class='help-block'>{{form.nombre.help_text}}</span></div>
+    {% if form.nombre.errors %}
+    <div class="alert alert-danger"><strong>{{form.nombre.errors|escape}}</strong></div>
+    {% endif %}
+	<br>
+    <label for="zona_horaria">{{ form.zona_horaria.label_tag }}</label>
+    <div id="zona_horaria">{{ form.zona_horaria }}</div>
+    {% if form.zona_horaria.errors %}
+    <br>
+    <div class="alert alert-danger"><strong>{{form.zona_horaria.errors|escape}}</strong></div>
+    {% endif %}
+	<br>
+<input type="submit" value="Crear Calendario"/>
+</form>
+
+{% endblock %}

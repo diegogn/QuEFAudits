@@ -1,0 +1,53 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% block scripts %}
+    $("a").css('cursor','pointer');
+    {% if okMessage %}
+        alert('{% trans "File created succesfully" %}')
+    {% elif not form.is_valid and request.method == 'POST'%}
+        $("#myModalForm").modal('show');
+    {% endif %}
+{% endblock %}
+{% block titulo %} {%  trans "Item's details" %} {% endblock %}
+
+{% block encabezado %} {%  trans "Item's details" %} {% endblock %}
+
+{% block contenido %}
+
+    <h4>{% trans "Basic Properties" %}</h4>
+        <label>{% trans "Name" %}</label>: {{ item.name|safe }}<br>
+        <label>{% trans "Question" %}</label>: {{ item.question|safe }}<br>
+        <label>{% trans "Tag" %}</label>: {{ item.tag|safe }}<br>
+
+    <h4>{% trans "Attached Files" %}&nbsp;<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm">{% trans "New File"%}</button></h4>
+    {% for files in item.document_set.all %}
+       <div class="glyphicon glyphicon-book">{{ files.filename }}&nbsp;<a href="{% url 'delete_document' files.id %}">x</a></div>
+            <br>
+            {% empty %}
+            {% trans "No Files attached" %}
+        {% endfor %}
+    <div class="modal fade" id="myModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">{% trans "Create new file" %}</div>
+          <div class="modal-body">
+          <form method="post" action="" enctype="multipart/form-data">
+              {% csrf_token %}
+              {% for field in form %}
+                {{ field.label_tag }} {{ field }}
+                {% if field.errors%}
+                     <br>
+                     <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
+                {% endif %}<br><br>
+              {% endfor %}
+              <input type="submit" value="Crear"/>
+          </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <br>
+{% endblock %}
