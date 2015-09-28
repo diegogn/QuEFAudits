@@ -62,7 +62,7 @@ class TagForm(forms.ModelForm):
 
     class Meta:
         model = Tag
-        fields = ('name', 'father_tag')
+        fields = ('name', 'parent')
 
 
 class ItemCreateForm(forms.ModelForm):

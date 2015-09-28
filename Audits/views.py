@@ -227,5 +227,13 @@ def document_delete(request, document_id):
     document.delete()
 
     return HttpResponseRedirect('/audits/item/gestor/details/%d' % iden)
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def list_tag_tree(request):
+    tags = Tag.objects.all()
+
+    return render(request, "list_tags_tree.html", {"tags": tags})
+
 # HttpResponse('<html><title>En contrucción</title><body><h1>En construcción</h1></body></html>')
 

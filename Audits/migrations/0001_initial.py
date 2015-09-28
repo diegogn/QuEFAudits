@@ -2,14 +2,16 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
-from django.conf import settings
+import mptt.fields
 import oauth2client.django_orm
+from django.conf import settings
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
         ('auth', '0006_require_contenttypes_0002'),
+        migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
@@ -39,7 +41,7 @@ class Migration(migrations.Migration):
                 ('startDate', models.DateField(verbose_name='StartDate')),
                 ('eventId', models.IntegerField(null=True)),
                 ('regularityInt', models.IntegerField(verbose_name='Regularity')),
-                ('regularity', models.CharField(max_length=100, verbose_name='Period', choices=[(b'DAYLY', b'DAYLY'), (b'WEAKLY', b'WEAKLY'), (b'MONTHLY', b'MONTHLY'), (b'YEARLY', b'YEARLY')])),
+                ('regularity', models.CharField(max_length=100, verbose_name='Period', choices=[(b'DAYLY', 'DAYLY'), (b'WEAKLY', 'WEAKLY'), (b'MONTHLY', 'MONTHLY'), (b'YEARLY', 'YEARLY')])),
             ],
         ),
         migrations.CreateModel(
@@ -63,7 +65,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('filename', models.CharField(max_length=100, verbose_name='Filename')),
-                ('docFile', models.FileField(upload_to=b'', verbose_name='File')),
+                ('docFile', models.FileField(upload_to=b'Documents/%Y%m%d', verbose_name='File')),
             ],
         ),
         migrations.CreateModel(
@@ -89,7 +91,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=50, verbose_name='Name')),
                 ('question', models.CharField(max_length=100, verbose_name='Question')),
-                ('url', models.CharField(max_length=200, verbose_name='URL', blank=True)),
+                ('url', models.URLField(verbose_name='URL', blank=True)),
             ],
         ),
         migrations.CreateModel(
@@ -106,8 +108,15 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=50, verbose_name='Name')),
-                ('fatherTag', models.ForeignKey(related_name='children', verbose_name='Father Tag', blank=True, to='Audits.Tag')),
+                ('lft', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('rght', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('tree_id', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('level', models.PositiveIntegerField(editable=False, db_index=True)),
+                ('parent', mptt.fields.TreeForeignKey(related_name='children', verbose_name='Father Tag', blank=True, to='Audits.Tag', null=True)),
             ],
+            options={
+                'abstract': False,
+            },
         ),
         migrations.CreateModel(
             name='Usuario',
@@ -120,7 +129,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='item',
-            name='Tag',
+            name='tag',
             field=models.ForeignKey(verbose_name='Tag', to='Audits.Tag'),
         ),
         migrations.AddField(
@@ -141,12 +150,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='audit',
             name='auditor',
-            field=models.ForeignKey(verbose_name='Auditor', to='Audits.Auditor', null=True),
+            field=models.ForeignKey(related_name='auditor', verbose_name='Auditor', to=settings.AUTH_USER_MODEL, null=True),
         ),
         migrations.AddField(
             model_name='audit',
             name='gestor',
-            field=models.ForeignKey(to='Audits.Gestor'),
+            field=models.ForeignKey(related_name='gestor', to=settings.AUTH_USER_MODEL),
         ),
         migrations.AddField(
             model_name='audit',
@@ -156,7 +165,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='audit',
             name='usuario',
-            field=models.ForeignKey(verbose_name='User', to='Audits.Usuario', null=True),
+            field=models.ForeignKey(related_name='usuario', verbose_name='User', to=settings.AUTH_USER_MODEL, null=True),
         ),
         migrations.AddField(
             model_name='answer',

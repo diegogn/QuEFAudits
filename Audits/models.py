@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from oauth2client.django_orm import CredentialsField
 from django.utils.translation import ugettext_lazy as _
+from mptt.models import MPTTModel, TreeForeignKey
 
 
 # Create your models here.
@@ -34,10 +35,14 @@ class Auditor(models.Model):
     surname = models.CharField(max_length="50", verbose_name=_("Surname"))
 
 
-class Tag(models.Model):
+class Tag(MPTTModel):
     name = models.CharField(_("Name"), max_length=50)
     #Relaciones
-    father_tag = models.ForeignKey('self', null=True, blank=True, related_name="children", verbose_name=_("Father Tag"))
+    parent = TreeForeignKey('self', null=True, blank=True, related_name="children", verbose_name=_("Father Tag")
+                            , db_index=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['name']
 
     def __str__(self):
         return self.name

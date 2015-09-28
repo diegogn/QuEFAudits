@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% load mptt_tags %}
+{% block titulo %} {%  trans "Tags Tree" %} {% endblock %}
+
+{% block encabezado %} {%  trans "Tags Tree" %} {% endblock %}
+
+{% block contenido %}
+    <ul>
+    {% recursetree tags %}
+        <li>
+            {{ node.name }}
+            {% if not node.is_leaf_node %}
+                <ul class="children">
+                    {{ children }}
+                </ul>
+            {% endif %}
+        </li>
+    {% endrecursetree %}
+</ul>
+{% endblock %}

@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^create/gestor/item/(?P<tag_id>[0-9]+)$', views.create_item, name='create_item'),
     url(r'^list/gestor/items/(?P<tag_id>[0-9]*)$', views.list_tag_items, name='list_tag_items'),
     url(r'^item/gestor/details/(?P<item_id>[0-9]+)$', views.item_details, name='item_details'),
-    url(r'^document/delete/(?P<document_id>[0-9]+)$', views.document_delete, name='delete_document')
+    url(r'^document/delete/(?P<document_id>[0-9]+)$', views.document_delete, name='delete_document'),
+    url(r'^list/gestor/tags_tree$', views.list_tag_tree, name='list_tags_tree'),
 ]
