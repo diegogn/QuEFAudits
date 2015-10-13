@@ -107,7 +107,7 @@ class Answer(models.Model):
     item = models.ForeignKey('Item')
 
     def __str__(self):
-        return self.name
+        return self.name + ': ' + self.value
 
 
 class Result(models.Model):

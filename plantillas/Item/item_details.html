@@ -8,9 +8,13 @@
         $("#myModalForm").modal('show');
     {% endif %}
 {% endblock %}
+{% block style_css %}<link rel="stylesheet" type="text/css" href="/static/css/custom.css">{% endblock %}
 {% block titulo %} {%  trans "Item's details" %} {% endblock %}
 
-{% block encabezado %} {%  trans "Item's details" %} {% endblock %}
+{% block encabezado %} {%  trans "Item's details" %} &nbsp; <a class="normal-link" href="{% url 'edit_item' item.id %}">
+    <span class="glyphicon glyphicon-pencil header-gli"></span></a>
+    &nbsp;<a class="normal-link" href="{% url 'delete_item' item.id %}">
+        <span class="glyphicon glyphicon-remove header-gli"></span></a>{% endblock %}
 
 {% block contenido %}
 
@@ -19,13 +23,27 @@
         <label>{% trans "Question" %}</label>: {{ item.question|safe }}<br>
         <label>{% trans "Tag" %}</label>: {{ item.tag|safe }}<br>
 
-    <h4>{% trans "Attached Files" %}&nbsp;<button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm">{% trans "New File"%}</button></h4>
+    <h4>{% trans "Attached Files" %}&nbsp;<button type="button" class="btn btn-primary btn-xs" data-toggle="modal"
+                                                  data-target="#myModalForm">{% trans "New File"%}</button></h4>
     {% for files in item.document_set.all %}
-       <div class="glyphicon glyphicon-book">{{ files.filename }}&nbsp;<a href="{% url 'delete_document' files.id %}">x</a></div>
+       <div class="glyphicon glyphicon-book">{{ files.filename }}&nbsp;
+           <a href="{% url 'delete_document' files.id %}">x</a></div>
             <br>
             {% empty %}
             {% trans "No Files attached" %}
         {% endfor %}
+
+    <h4>{% trans "Answers" %}&nbsp;<button type="button" class="btn btn-primary btn-xs" data-toggle="modal"
+                                           data-target="#myModalFormAnswer">{% trans "New Answer"%}</button></h4>
+    {% for answer in item.answer_set.all %}
+      <li>{{ answer }}&nbsp; <a class="normal-link" href="{% url 'edit_answer' answer.id %}">
+    <span class="glyphicon glyphicon-pencil"></span></a>
+    &nbsp;<a class="normal-link" href="{% url 'delete_answer' answer.id %}">
+        <span class="glyphicon glyphicon-remove"></span></a></li>
+            {% empty %}
+            {% trans "No Answers" %}
+        {% endfor %}
+
     <div class="modal fade" id="myModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -34,6 +52,30 @@
           <form method="post" action="" enctype="multipart/form-data">
               {% csrf_token %}
               {% for field in form %}
+                {{ field.label_tag }} {{ field }}
+                {% if field.errors%}
+                     <br>
+                     <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
+                {% endif %}<br><br>
+              {% endfor %}
+              <input type="submit" value="Crear"/>
+          </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="myModalFormAnswer" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">{% trans "Create new Answer" %}</div>
+          <div class="modal-body">
+          <form method="post" action="{% url 'create_answer' item.id%}">
+              {% csrf_token %}
+              {% for field in formA %}
                 {{ field.label_tag }} {{ field }}
                 {% if field.errors%}
                      <br>

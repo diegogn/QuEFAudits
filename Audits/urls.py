@@ -13,4 +13,11 @@ urlpatterns = [
     url(r'^item/gestor/details/(?P<item_id>[0-9]+)$', views.item_details, name='item_details'),
     url(r'^document/delete/(?P<document_id>[0-9]+)$', views.document_delete, name='delete_document'),
     url(r'^list/gestor/tags_tree$', views.list_tag_tree, name='list_tags_tree'),
+    url(r'^edit/gestor/tag/(?P<tag_id>[0-9]+)$', views.edit_tag, name='edit_tag'),
+    url(r'^delete/gestor/tag/(?P<tag_id>[0-9]+)$', views.delete_tag, name='delete_tag'),
+    url(r'^edit/gestor/item/(?P<item_id>[0-9]+)$', views.edit_item, name='edit_item'),
+    url(r'^delete/gestor/item/(?P<item_id>[0-9]+)$', views.delete_item, name='delete_item'),
+    url(r'^create/gestor/answer/(?P<item_id>[0-9]+)$', views.create_answer, name='create_answer'),
+    url(r'^edit/gestor/answer/(?P<answer_id>[0-9]+)$', views.edit_answer, name='edit_answer'),
+    url(r'^delete/gestor/answer/(?P<answer_id>[0-9]+)$', views.delete_answer, name='delete_answer'),
 ]

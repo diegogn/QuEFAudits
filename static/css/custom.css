@@ -1,0 +1,11 @@
+a.normal-link:link,
+a.normal-link:hover,
+a.normal-link:visited,
+a.normal-link:active{
+    text-decoration: none;
+    color: black;
+}
+
+.header-gli{
+    font-size: 20px;
+}

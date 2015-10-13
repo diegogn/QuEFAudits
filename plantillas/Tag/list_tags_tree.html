@@ -16,7 +16,7 @@
 </style>
 {% endblock %}
 {% block scripts %}
-$("ul").on("click",function(e){
+$("ul.children").on("click",function(e){
     e.stopPropagation();
 	var style = $(this).children().css("display");
     if(style == 'none'){
@@ -26,7 +26,7 @@ $("ul").on("click",function(e){
     }
 });
 
-$("ul").on("click","li",function(e){
+$("ul").on("click","li.father",function(e){
     e.stopPropagation();
 	var style = $(this).children().css("display");
     if(style == 'none'){

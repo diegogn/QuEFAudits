@@ -8,9 +8,14 @@
         $("#myModalForm{{ tag_value }}").modal('show');
     {% endif %}
 {% endblock %}
+{% block style_css %}<link rel="stylesheet" type="text/css" href="/static/css/custom.css">{% endblock %}
 {% block titulo %}{% trans "List Tags" %}{% endblock %}
 {% block encabezado %}{% trans "List Tags" %}{% endblock %}
-{% block heading %}{{ element.name }}{% endblock %}
+{% block heading %}{{ element.name }} &nbsp;  <a class="normal-link" href="{% url 'edit_tag' element.id %}">
+    <span class="glyphicon glyphicon-pencil"></span></a>
+    &nbsp;<a class="normal-link" href="{% url 'delete_tag' element.id %}">
+        <span class="glyphicon glyphicon-remove"></span></a>
+{% endblock %}
 {% block body %}
     {% for children in element.children.all %}
         {{ children.name }}

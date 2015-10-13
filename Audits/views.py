@@ -1,11 +1,12 @@
 # -*- encoding: utf8 -*-
 from django.shortcuts import HttpResponseRedirect, render, get_list_or_404, get_object_or_404
-from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm
+from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm
 from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponse
 from QuEFAudits import settings
+from django.contrib.auth.decorators import user_passes_test
 
 
 # Create your views here.
@@ -98,7 +99,7 @@ def create_tag(request):
 def list_tags(request, tag_id):
     tags = Tag.objects.all()
 
-    paginator = Paginator(tags, 5)
+    paginator = Paginator(tags, 20)
 
     page = request.GET.get('page')
 
@@ -210,6 +211,7 @@ def item_details(request, item_id):
     else:
         form = DocumentForm
     context['form'] = form
+    context['formA'] = AnswerForm
 
     return render(request, 'item_details.html', context)
 
@@ -237,3 +239,96 @@ def list_tag_tree(request):
 
 # HttpResponse('<html><title>En contrucción</title><body><h1>En construcción</h1></body></html>')
 
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def edit_tag(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    if request.method == 'POST':
+        form = TagForm(request.POST, instance=tag)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/audits/list/tags')
+    else:
+        form = TagForm(instance=tag)
+
+    return render(request, "form.html", {"form": form})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def delete_tag(request, tag_id):
+    tag = get_object_or_404(Tag, id=tag_id)
+    tag.delete()
+
+    return HttpResponseRedirect('/audits/list/tags')
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def edit_item(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    if request.method == 'POST':
+        form = ItemCreateForm(request.POST, instance=item)
+        if form.is_valid():
+            i = form.save()
+            return HttpResponseRedirect('/audits/item/gestor/details/%d' % i.id)
+    else:
+        form = ItemCreateForm(instance=item)
+
+    return render(request, "form.html", {"form": form})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def delete_item(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+    item.delete()
+
+    return HttpResponseRedirect('/audits/list/tags')
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def create_answer(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+
+    if request.method == 'POST':
+        form = AnswerForm(request.POST)
+        if form.is_valid():
+            answer = form.save(commit=False)
+            answer.item = item
+            answer.save()
+
+            return HttpResponseRedirect('/audits/item/gestor/details/%s' % item_id)
+    else:
+        form = AnswerForm
+
+    return render(render,'list_tags.html', {'formA': form})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def edit_answer(request, answer_id):
+    answer = get_object_or_404(Answer, id=answer_id)
+
+    if request.method == 'POST':
+        form = AnswerForm(request.POST, instance=answer)
+        if form.is_valid():
+            form.save()
+
+            return HttpResponseRedirect('/audits/item/gestor/details/%s' % answer.item.id)
+    else:
+        form = AnswerForm(instance=answer)
+
+    return render(request, 'form.html', {'form': form})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def delete_answer(request, answer_id):
+    answer = get_object_or_404(Answer, id=answer_id)
+    id = answer.item.id
+    answer.delete()
+
+    return HttpResponseRedirect('/audits/item/gestor/details/%d' % id)

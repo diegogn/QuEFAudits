@@ -1,6 +1,6 @@
 __author__ = 'Diego Desarrollo'
 from django import forms
-from Audits.models import Audit, Tag, Item, Document
+from Audits.models import Audit, Tag, Item, Document, Answer
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
@@ -76,3 +76,8 @@ class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         exclude = ['item', 'instance']
+
+class AnswerForm(forms.ModelForm):
+    class Meta:
+        model = Answer
+        fields = ('name','value')

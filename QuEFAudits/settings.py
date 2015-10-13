@@ -126,4 +126,4 @@ LOGIN_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login/'
 
-MEDIA_ROOT = 'C:/Users/Diego Desarrollo/TFG'
+MEDIA_ROOT = 'C:/Users/Superwaki/TFG'
