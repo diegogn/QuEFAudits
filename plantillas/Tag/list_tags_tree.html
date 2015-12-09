@@ -16,34 +16,33 @@
 </style>
 {% endblock %}
 {% block scripts %}
-$("ul.children").on("click",function(e){
-    e.stopPropagation();
-	var style = $(this).children().css("display");
-    if(style == 'none'){
-     	   $(this).children().css("display",'block');
-    }else{
-     		$(this).children().css("display",'none');
-    }
-});
-
 $("ul").on("click","li.father",function(e){
     e.stopPropagation();
-	var style = $(this).children().css("display");
+	var style = $(this).children("ul.children").css("display");
     if(style == 'none'){
-     	   $(this).children().css("display",'block');
+     	   $(this).children("ul.children").css("display",'block');
     }else{
-     		$(this).children().css("display",'none');
+     		$(this).children("ul.children").css("display",'none');
     }
 });
-    $(".father").children().css("display",'none');
+    $("li.children").on("click",function(e){
+        e.stopPropagation();
+    });
+    $("a#stop").on("click",function(e){
+        e.stopPropagation();
+    });
 {% endblock%}
-{% block encabezado %} {%  trans "Tags Tree" %} {% endblock %}
 
 {% block contenido %}
+    <div class="page-header"><h1>{%  trans "Tags Tree" %}</h1></div>
     <ul>
     {% recursetree tags %}
-        <li {% if not node.is_leaf_node %}class="father"{% endif %}>
-            {{ node.name }}
+        <li {% if not node.is_leaf_node %}class="father"{% else %}class="children"{% endif %}>
+            {{ node.name }}({{ node.weight }})&nbsp;<a id="stop" href="{% url 'list_tag_items' node.id %}">{% trans "View Items"%}</a>&nbsp;
+            <a id="stop" class="normal-link" href="{% url 'edit_tag' node.id %}">
+    <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
+            <a id="stop" class="normal-link" href="{% url 'delete_tag' node.id %}">
+        <span class="glyphicon glyphicon-remove"></span></a>
             {% if not node.is_leaf_node %}
                 <ul class="children">
                     {{ children }}
@@ -52,4 +51,6 @@ $("ul").on("click","li.father",function(e){
         </li>
     {% endrecursetree %}
 </ul>
+    <div class="col-lg-12 text-center"><a href="{% url 'create_tag'%}" class="btn btn-primary" role="button">
+        {% trans 'Create Tag' %}</a></div>
 {% endblock %}

@@ -1,14 +1,15 @@
 {% extends "index.html" %}
-
-{% block titulo %} Bienvenido {% endblock %}
-
-{% block encabezado %} Bienvenido {% endblock %}
+{% load i18n %}
+{% block titulo %} {% trans 'Welcome' %}{% endblock %}
 
 {% block contenido %}
+<div class="page-header">
+		<h1>{% trans 'Welcome' %}</h1>
+</div>
 
 <div class="jumbotron">
 <div class="container">
-<p>Estas en la pagina numero uno para la asistencia en tus auditorias internas....</p>
+<p>{% trans "You are in QAuditor, it is a web application in which you can handdle your internal audits. This application is a easy, comfortable and fast way to realize your internal audits." %}</p>
 </div>
 </div>
 

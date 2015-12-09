@@ -8,6 +8,15 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class AuditForm(forms.ModelForm):
+    plan = (
+        (0, _("No needed")),
+        (1, _("One time in week")),
+        (2, _("One time in month")),
+        (3, _("One time in year")),
+        (4, _("Advanced Configuration")),
+    )
+
+    period = forms.ChoiceField(label=_("Execution time"), choices=plan)
 
     def __init__(self, *args, **kwargs):
         super(AuditForm, self).__init__(*args, **kwargs)
@@ -62,7 +71,7 @@ class TagForm(forms.ModelForm):
 
     class Meta:
         model = Tag
-        fields = ('name', 'parent')
+        fields = ('name', 'parent', 'weight')
 
 
 class ItemCreateForm(forms.ModelForm):

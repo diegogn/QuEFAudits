@@ -1,7 +1,10 @@
 {% extends 'list.html' %}
 {% load i18n %}
 {% block titulo %}{% trans "List Audits" %}{% endblock %}
-{% block encabezado %}{% trans "List Audits" %}{% endblock %}
+{% block encabezado %}
+    <div class="page-header">
+        <h1>{% blocktrans with name=tag.name %}Audit's List{% endblocktrans %}</h1></div>
+{% endblock %}
 {% block heading %}{{ element.name }}{% endblock %}
 {% block body %}
     <li>{{ element.creationDate }}</li>
@@ -14,3 +17,7 @@
     {% endfor%}
 {% endblock %}
 {% block no_found %}{% trans "There are not audits" %}{% endblock %}
+{% block boton %}
+        <a href="{% url 'create_audit' %}?page={{ element_page.number }}" class="btn btn-primary" role="button">
+        {% trans 'Create Audit' %}</a>
+{% endblock %}

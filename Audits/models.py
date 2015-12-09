@@ -37,6 +37,7 @@ class Auditor(models.Model):
 
 class Tag(MPTTModel):
     name = models.CharField(_("Name"), max_length=50)
+    weight = models.DecimalField(_("Weight"), max_digits=3, decimal_places=2)
     #Relaciones
     parent = TreeForeignKey('self', null=True, blank=True, related_name="children", verbose_name=_("Father Tag")
                             , db_index=True)
@@ -50,23 +51,41 @@ class Tag(MPTTModel):
 
 class Audit(models.Model):
     frecuency = (
-        ('DAYLY', _('DAYLY')),
-        ('WEAKLY', _('WEAKLY')),
-        ('MONTHLY', _('MONTHLY')),
-        ('YEARLY', _('YEARLY')),
+        ('DAYLY', _('Dayly')),
+        ('WEAKLY', _('Weakly')),
+        ('MONTHLY', _('Monthly')),
+        ('YEARLY', _('Yearly')),
+    )
+
+    state = (
+        ('INACTIVE', _('Inactive')),
+        ('ACTIVE', _('Active')),
+        ('FINISH', _('Finish')),
+        ('ELIMINATED', _('Eliminated')),
     )
 
     name = models.CharField(_("Name"), max_length=100)
     creationDate = models.DateField(_("CreationDate"))
     startDate = models.DateField(_("StartDate"))
     eventId = models.IntegerField(null=True)
-    regularityInt = models.IntegerField(_("Regularity"))
-    regularity = models.CharField(_("Period"), max_length=100, choices=frecuency)
+    state = models.CharField(_("State"), max_length=100, choices=state)
+
     #Ahora se definen las relaciones
     gestor = models.ForeignKey(User, related_name='gestor')
     usuario = models.ForeignKey(User, null=True, verbose_name=_("User"), related_name='usuario')
     auditor = models.ForeignKey(User, null=True, verbose_name=_("Auditor"), related_name='auditor')
     tags = models.ManyToManyField('Tag', verbose_name=_("Tags"))
+
+    #Atributos de la planificacion de google calendar.
+    freq = models.CharField(_("Period"), max_length=100, choices=frecuency, null=True, blank=True)
+    interval = models.IntegerField(_("Regularity"), null=True, blank=True)
+    count = models.IntegerField(_("Count"), null=True, blank=True)
+    byday = models.CharField(_("Byday"), max_length=100, null=True, blank=True)
+    bymonth = models.CharField(_("Bymonth"), max_length=100, null=True, blank=True)
+    bymonthday = models.CharField(_("Bymonthday"), max_length=100, null=True, blank=True)
+    wkst = models.CharField(_("Wkst"), max_length=2, null=True, blank=True)
+    byyearday = models.CharField(_("Byyearday"), max_length=800, null=True, blank=True)
+    bysetpos = models.IntegerField(_("Bysetpos"), null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -102,7 +121,7 @@ class Item(models.Model):
 
 class Answer(models.Model):
     name = models.CharField(_("Name"), max_length=100)
-    value = models.TextField(_("Value"))
+    value = models.DecimalField(_("Value"), max_digits=3, decimal_places=2)
     #Relaciones
     item = models.ForeignKey('Item')
 

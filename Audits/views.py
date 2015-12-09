@@ -21,10 +21,11 @@ def create_audit(request):
             audit.save()
             form.save_m2m()
 
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/audits/list/gestor/audits/?page=-1')
     else:
         form = AuditForm()
-    return render(request, 'form.html', {'form': form})
+    return render(request, 'create_audit.html', {'form': form, 'back_url': '/audits/list/gestor/audits/?page=%s' %
+                                                                   request.GET.get('page')})
 
 
 def index(request):
@@ -87,11 +88,11 @@ def create_tag(request):
         form = TagForm(request.POST)
         if form.is_valid():
             tag = form.save()
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/audits/list/gestor/tags_tree')
     else:
         form = TagForm
 
-    return render(request, 'form.html', {'form': form})
+    return render(request, 'form.html', {'form': form, 'back_url': '/audits/list/gestor/tags_tree'})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -99,7 +100,7 @@ def create_tag(request):
 def list_tags(request, tag_id):
     tags = Tag.objects.all()
 
-    paginator = Paginator(tags, 20)
+    paginator = Paginator(tags, 25)
 
     page = request.GET.get('page')
 
@@ -136,10 +137,10 @@ def create_item_no_form(request, tag_id):
             item = form.save(commit=False)
             item.tag = get_object_or_404(Tag,id=tag_id)
             item.save()
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect('/audits/list/gestor/items/'+tag_id+'?page=-1')
     else:
         form = ItemCreateForm
-    return render(request, 'form.html', {'form': form})
+    return render(request, 'form.html', {'form': form, 'back_url': '/audits/list/gestor/items/'+tag_id+'?page='+request.GET.get('page')})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -175,12 +176,7 @@ def list_items(request):
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
 def list_tag_items(request, tag_id):
-
-    if tag_id:
-        items = get_list_or_404(Item, id=tag_id)
-    else:
-        items = Item.objects.all()
-
+    items = Item.objects.filter(tag_id=tag_id)
     paginator = Paginator(items, 25)
 
     page = request.GET.get('page')
@@ -192,7 +188,7 @@ def list_tag_items(request, tag_id):
     except EmptyPage:
         items_page = paginator.page(paginator.num_pages)
 
-    return render(request,'list_items.html', {'element_page': items_page})
+    return render(request,'list_items.html', {'element_page': items_page, 'tag': Tag.objects.get(id=tag_id)})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -212,6 +208,7 @@ def item_details(request, item_id):
         form = DocumentForm
     context['form'] = form
     context['formA'] = AnswerForm
+    context['page'] = request.GET.get('page')
 
     return render(request, 'item_details.html', context)
 
@@ -248,11 +245,11 @@ def edit_tag(request, tag_id):
         form = TagForm(request.POST, instance=tag)
         if form.is_valid():
             form.save()
-            return HttpResponseRedirect('/audits/list/tags')
+            return HttpResponseRedirect('/audits/list/gestor/tags_tree')
     else:
         form = TagForm(instance=tag)
 
-    return render(request, "form.html", {"form": form})
+    return render(request, "form.html", {"form": form, 'back_url': '/audits/list/gestor/tags_tree'})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -261,7 +258,7 @@ def delete_tag(request, tag_id):
     tag = get_object_or_404(Tag, id=tag_id)
     tag.delete()
 
-    return HttpResponseRedirect('/audits/list/tags')
+    return HttpResponseRedirect('/audits/list/gestor/tags_tree')
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -276,7 +273,7 @@ def edit_item(request, item_id):
     else:
         form = ItemCreateForm(instance=item)
 
-    return render(request, "form.html", {"form": form})
+    return render(request, "form.html", {"form": form, 'back_url': '/audits/item/gestor/details/%s' % item_id})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -285,7 +282,7 @@ def delete_item(request, item_id):
     item = get_object_or_404(Item, id=item_id)
     item.delete()
 
-    return HttpResponseRedirect('/audits/list/tags')
+    return HttpResponseRedirect('/audits/list/gestor/items/'+item.tag_id)
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -304,7 +301,7 @@ def create_answer(request, item_id):
     else:
         form = AnswerForm
 
-    return render(render,'list_tags.html', {'formA': form})
+    return render(render,'list_tags.html', {'formA': form, 'back_url': 'audits/item/gestor/details/%s' % item_id})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -321,7 +318,7 @@ def edit_answer(request, answer_id):
     else:
         form = AnswerForm(instance=answer)
 
-    return render(request, 'form.html', {'form': form})
+    return render(request, 'form.html', {'form': form, 'back_url': 'audits/item/gestor/details/%s' % answer.item_id})
 
 
 @login_required(login_url=settings.LOGIN_URL)

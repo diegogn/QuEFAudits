@@ -11,8 +11,11 @@
   <!-- Optional theme -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
   <!-- Latest compiled and minified JavaScript -->
+  <link rel="stylesheet" href="/static/css/custom.css">
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script src="/static/js/js.cookie.js"></script>
+  <script src="/static/js/custom_ca.js"></script>
+  {% block script_import %}{% endblock %}
      <script type="text/javascript">
 
       $(document).ready(function(){
@@ -54,6 +57,10 @@
 		<div class="collapse navbar-collapse navbar-ex1-collapse">
 			<ul class="nav navbar-nav">
                 {% if user and perms.auth.gestor %}
+                    <li><a href="{% url 'list_my_audits' %}">{% trans "Audits" %}</a></li>
+                    <li><a href="{% url 'list_tags_tree' %}">{% trans "Tags" %}</a></li>
+
+                    <!-- Antiguo menú
 				<li class="dropdown">
 			        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
 			          {% trans "Audits" %} <b class="caret"></b>
@@ -72,7 +79,7 @@
                             <li><a href="{% url 'list_tags' '' %}">{% trans "List Tags" %}</a></li>
                             <li><a href="{% url 'list_tags_tree' %}">{% trans "List Tree of Tags" %}</a></li>
                         </ul>
-                    </li>
+                </li>-->
                 {% endif %}
             {% if user and perms.auth.admin%}
                     <li><a href="{% url 'create_user' %}">{% trans "Register User" %}</a></li>
@@ -97,10 +104,6 @@
 		    </ul>
 		</div>
 	</nav>
-	
-	<div class="page-header">
-		<h1>{% block encabezado %}{% endblock %}</h1>
-	</div>
   </header>	
 	{% block contenido %}{% endblock %}
 </div>

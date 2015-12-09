@@ -11,52 +11,71 @@
 {% block style_css %}<link rel="stylesheet" type="text/css" href="/static/css/custom.css">{% endblock %}
 {% block titulo %} {%  trans "Item's details" %} {% endblock %}
 
-{% block encabezado %} {%  trans "Item's details" %} &nbsp; <a class="normal-link" href="{% url 'edit_item' item.id %}">
+{% block contenido %}
+    <div class="page-header"><h1>{%  trans "Item's details" %} &nbsp;
+        <a class="normal-link" href="{% url 'edit_item' item.id %}">
     <span class="glyphicon glyphicon-pencil header-gli"></span></a>
     &nbsp;<a class="normal-link" href="{% url 'delete_item' item.id %}">
-        <span class="glyphicon glyphicon-remove header-gli"></span></a>{% endblock %}
+        <span class="glyphicon glyphicon-remove header-gli"></span></a></h1></div>
 
-{% block contenido %}
+    <fieldset class="scheduler-border">
+    <legend class="scheduler-border">{% trans "Basic Properties" %}</legend>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Name" %}:</label> {{ item.name|safe }}</div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Question" %}:</label> {{ item.question|safe }}</div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Tag" %}:</label> {{ item.tag|safe }}</div>
+    </fieldset>
 
-    <h4>{% trans "Basic Properties" %}</h4>
-        <label>{% trans "Name" %}</label>: {{ item.name|safe }}<br>
-        <label>{% trans "Question" %}</label>: {{ item.question|safe }}<br>
-        <label>{% trans "Tag" %}</label>: {{ item.tag|safe }}<br>
+    <fieldset class="scheduler-border">
+    <legend class="scheduler-border">{% trans "Attached Files" %}&nbsp;
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm">
+            {% trans "New File"%}</button></legend>
 
-    <h4>{% trans "Attached Files" %}&nbsp;<button type="button" class="btn btn-primary btn-xs" data-toggle="modal"
-                                                  data-target="#myModalForm">{% trans "New File"%}</button></h4>
     {% for files in item.document_set.all %}
-       <div class="glyphicon glyphicon-book">{{ files.filename }}&nbsp;
+       <div class="glyphicon glyphicon-book col-lg-12 text-center">{{ files.filename }}&nbsp;
            <a href="{% url 'delete_document' files.id %}">x</a></div>
-            <br>
             {% empty %}
-            {% trans "No Files attached" %}
+            <div class="col-lg-12 text-center">{% trans "No Files attached" %}</div>
         {% endfor %}
+    </fieldset>
 
-    <h4>{% trans "Answers" %}&nbsp;<button type="button" class="btn btn-primary btn-xs" data-toggle="modal"
-                                           data-target="#myModalFormAnswer">{% trans "New Answer"%}</button></h4>
+    <fieldset class="scheduler-border">
+    <legend class="scheduler-border">{% trans "Answers" %}&nbsp;
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalFormAnswer">
+            {% trans "New Answer"%}</button></legend>
+
     {% for answer in item.answer_set.all %}
-      <li>{{ answer }}&nbsp; <a class="normal-link" href="{% url 'edit_answer' answer.id %}">
+      <div class="col-lg-12 text-center">{{ answer }}&nbsp; <a class="normal-link" href="{% url 'edit_answer' answer.id %}">
     <span class="glyphicon glyphicon-pencil"></span></a>
     &nbsp;<a class="normal-link" href="{% url 'delete_answer' answer.id %}">
-        <span class="glyphicon glyphicon-remove"></span></a></li>
+        <span class="glyphicon glyphicon-remove"></span></a></div>
             {% empty %}
-            {% trans "No Answers" %}
+             <div class="col-lg-12 text-center">{% trans "No Answers" %}</div>
         {% endfor %}
+    </fieldset>
+
+    <div class="col-lg-12 text-center">
+        <a href="{% url 'list_tag_items' item.tag_id%}?page={{ page }}" class="btn btn-default" role="button">
+        {% trans 'Back' %}</a>
+    </div>
 
     <div class="modal fade" id="myModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">{% trans "Create new file" %}</div>
           <div class="modal-body">
-          <form method="post" action="" enctype="multipart/form-data">
+          <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
               {% csrf_token %}
               {% for field in form %}
-                {{ field.label_tag }} {{ field }}
-                {% if field.errors%}
-                     <br>
-                     <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
-                {% endif %}<br><br>
+                <div class="form-group">
+        <label class="col-lg-6 control-label" for="{{ field.name }}">{{ field.label}}:</label>
+            <div class="col-lg-6">
+            {{ field }}
+            </div>
+        {% if field.errors %}
+            <br>
+            <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
+        {% endif %}
+        </div>
               {% endfor %}
               <input type="submit" value="Crear"/>
           </form>
@@ -73,14 +92,19 @@
         <div class="modal-content">
           <div class="modal-header">{% trans "Create new Answer" %}</div>
           <div class="modal-body">
-          <form method="post" action="{% url 'create_answer' item.id%}">
+          <form  class="form-horizontal" method="post" action="{% url 'create_answer' item.id%}">
               {% csrf_token %}
               {% for field in formA %}
-                {{ field.label_tag }} {{ field }}
-                {% if field.errors%}
-                     <br>
-                     <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
-                {% endif %}<br><br>
+                <div class="form-group">
+        <label class="col-lg-6 control-label" for="{{ field.name }}">{{ field.label}}:</label>
+            <div class="col-lg-6">
+            {{ field }}
+            </div>
+        {% if field.errors %}
+            <br>
+            <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
+        {% endif %}
+        </div>
               {% endfor %}
               <input type="submit" value="Crear"/>
           </form>
