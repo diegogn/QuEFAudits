@@ -3,13 +3,21 @@ from django.shortcuts import HttpResponseRedirect, render, get_list_or_404, get_
 from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm
 from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object
 from django.http import HttpResponse
 from QuEFAudits import settings
+import time
+from django.db.models import Q
 from django.contrib.auth.decorators import user_passes_test
 
 
 # Create your views here.
+
+
+def not_user_permission(request):
+    return render(request,'not_user_permission.html')
+
+
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
 def create_audit(request):
@@ -18,6 +26,8 @@ def create_audit(request):
         if form.is_valid():
             audit = form.save(commit=False)
             audit.gestor = request.user
+            audit.state = 'INACTIVE'
+            audit.creation_date = time.strftime("%Y-%m-%d")
             audit.save()
             form.save_m2m()
 
@@ -48,8 +58,8 @@ def create_user(request):
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.admin', login_url=settings.LOGIN_URL)
 def list_audits(request):
-    audits = Audit.objects.all()
-    paginator = Paginator(audits, 25)
+    audits = Audit.objects.filter(~Q(state='ELIMINATED'))
+    paginator = Paginator(audits, 12)
 
     page = request.GET.get('page')
 
@@ -66,8 +76,8 @@ def list_audits(request):
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
 def list_my_audits(request):
-    audits = Audit.objects.filter(gestor=request.user)
-    paginator = Paginator(audits, 25)
+    audits = Audit.objects.filter(Q(gestor=request.user) & ~Q(state='ELIMINATED'))
+    paginator = Paginator(audits, 12)
 
     page = request.GET.get('page')
 
@@ -92,7 +102,7 @@ def create_tag(request):
     else:
         form = TagForm
 
-    return render(request, 'form.html', {'form': form, 'back_url': '/audits/list/gestor/tags_tree'})
+    return render(request, 'create_tag.html', {'form': form, 'back_url': '/audits/list/gestor/tags_tree'})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -100,7 +110,7 @@ def create_tag(request):
 def list_tags(request, tag_id):
     tags = Tag.objects.all()
 
-    paginator = Paginator(tags, 25)
+    paginator = Paginator(tags, 12)
 
     page = request.GET.get('page')
 
@@ -140,7 +150,7 @@ def create_item_no_form(request, tag_id):
             return HttpResponseRedirect('/audits/list/gestor/items/'+tag_id+'?page=-1')
     else:
         form = ItemCreateForm
-    return render(request, 'form.html', {'form': form, 'back_url': '/audits/list/gestor/items/'+tag_id+'?page='+request.GET.get('page')})
+    return render(request, 'create_item.html', {'form': form, 'back_url': '/audits/list/gestor/items/'+tag_id+'?page='+request.GET.get('page')})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -159,7 +169,7 @@ def create_item(request, tag_id):
 def list_items(request):
     items = Item.objects.all()
 
-    paginator = Paginator(items, 25)
+    paginator = Paginator(items, 12)
 
     page = request.GET.get('page')
 
@@ -177,7 +187,7 @@ def list_items(request):
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
 def list_tag_items(request, tag_id):
     items = Item.objects.filter(tag_id=tag_id)
-    paginator = Paginator(items, 25)
+    paginator = Paginator(items, 12)
 
     page = request.GET.get('page')
 
@@ -301,7 +311,7 @@ def create_answer(request, item_id):
     else:
         form = AnswerForm
 
-    return render(render,'list_tags.html', {'formA': form, 'back_url': 'audits/item/gestor/details/%s' % item_id})
+    return render(render,'list_tags.html', {'formA': form, 'back_url': '/audits/item/gestor/details/%s' % item_id})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -318,7 +328,7 @@ def edit_answer(request, answer_id):
     else:
         form = AnswerForm(instance=answer)
 
-    return render(request, 'form.html', {'form': form, 'back_url': 'audits/item/gestor/details/%s' % answer.item_id})
+    return render(request, 'form.html', {'form': form, 'back_url': '/audits/item/gestor/details/%s' % answer.item_id})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -329,3 +339,48 @@ def delete_answer(request, answer_id):
     answer.delete()
 
     return HttpResponseRedirect('/audits/item/gestor/details/%d' % id)
+
+
+def user_audit(user, kwargs):
+    audit_id = kwargs.itervalues().next()
+    audit = get_object_or_404(Audit, id=audit_id)
+
+    return audit.gestor == user
+
+@user_passes_test_object(user_audit)
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def audit_details(request, audit_id):
+    audit = get_object_or_404(Audit, id=audit_id)
+    instances = Instance.objects.filter(audit_id=audit_id)
+
+    paginator = Paginator(instances, 5)
+
+    page = request.GET.get('page')
+
+    try:
+        instances_page = paginator.page(page)
+    except PageNotAnInteger:
+        instances_page = paginator.page(1)
+    except EmptyPage:
+        instances_page = paginator.page(paginator.num_pages)
+
+    return render(request, 'audit_details.html', {'audit': audit, 'instances': instances_page,
+                                                  'pageb': request.GET.get('pageb')})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def audit_change_state(request, audit_id):
+    audit = get_object_or_404(Audit, id=audit_id)
+
+    if audit.state == 'INACTIVE':
+        audit.state = 'ACTIVE'
+    elif audit.state == 'ACTIVE':
+        audit.state = 'FINISH'
+    elif audit.state == 'FINISH':
+        audit.state = 'ELIMINATED'
+
+    audit.save()
+
+    return HttpResponseRedirect('/audits/audit/details/' + audit_id)

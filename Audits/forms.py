@@ -25,7 +25,7 @@ class AuditForm(forms.ModelForm):
 
     class Meta:
         model = Audit
-        exclude = ['eventId', 'gestor']
+        exclude = ['eventId', 'gestor', 'state', 'creation_date']
 
 
 class UserForm(UserCreationForm):

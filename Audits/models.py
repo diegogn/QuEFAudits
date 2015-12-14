@@ -46,7 +46,7 @@ class Tag(MPTTModel):
         order_insertion_by = ['name']
 
     def __str__(self):
-        return self.name
+        return self.name+'('+str(self.weight)+')'
 
 
 class Audit(models.Model):
@@ -65,8 +65,9 @@ class Audit(models.Model):
     )
 
     name = models.CharField(_("Name"), max_length=100)
-    creationDate = models.DateField(_("CreationDate"))
-    startDate = models.DateField(_("StartDate"))
+    description = models.TextField(_('Description'), blank=True)
+    creation_date = models.DateField(_("CreationDate"))
+    start_date = models.DateField(_("StartDate"))
     eventId = models.IntegerField(null=True)
     state = models.CharField(_("State"), max_length=100, choices=state)
 
@@ -92,7 +93,20 @@ class Audit(models.Model):
 
 
 class Instance(models.Model):
-    Date = models.DateField(_("Date"))
+    state = (
+        ('STARTED', _('Started')),
+        ('FINISHED', _('Finished')),
+    )
+
+    level = (
+        ("LOW", _("Low")),
+        ("MEDIUM", _("Medium")),
+        ("HIGH", _("High"))
+    )
+
+    date = models.DateField(_("Date"))
+    state = models.CharField(_("State"), max_length=50, choices=state)
+    level = models.CharField(_("Level"), max_length=6, choices=level)
     #Relaciones
     audit = models.ForeignKey('Audit')
     items = models.ManyToManyField('Item', through='Result', verbose_name=_("Items"))
@@ -126,7 +140,7 @@ class Answer(models.Model):
     item = models.ForeignKey('Item')
 
     def __str__(self):
-        return self.name + ': ' + self.value
+        return self.name + ': ' + str(self.value)
 
 
 class Result(models.Model):

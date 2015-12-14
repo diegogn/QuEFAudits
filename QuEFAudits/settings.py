@@ -127,3 +127,5 @@ LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'
 
 MEDIA_ROOT = 'C:/Users/Superwaki/TFG'
+
+NOT_USER_PERMISION = '/audits/not_user_permission/'

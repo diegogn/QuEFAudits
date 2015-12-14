@@ -1,0 +1,7 @@
+{% extends 'index.html' %}
+{% load i18n %}
+{% block titulo %} {% trans 'Not Permissions' %} {% endblock %}
+{{ cont|add:"0" }}
+{% block contenido %}
+    <p>We are sorry but it seems you don't have permission to do this, Are you the owner of the object?</p>
+{% endblock %}

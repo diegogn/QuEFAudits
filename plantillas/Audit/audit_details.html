@@ -1,0 +1,99 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% block style_css %}<link rel="stylesheet" type="text/css" href="/static/css/custom.css">{% endblock %}
+{% block titulo %} {%  trans "Audit's details" %} {% endblock %}
+
+{% block contenido %}
+    <div class="page-header"><h1>{%  trans "Audit's details" %}</h1>
+
+    <fieldset class="scheduler-border">
+    <legend class="scheduler-border">{% trans "Properties" %}</legend>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Name" %}:</label> <div class="col-lg-6 text-left">{{ audit.name|safe }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Description" %}:</label>  <div class="col-lg-6 text-left">{{ audit.description|safe|default:'-' }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Creation Date" %}:</label>  <div class="col-lg-6 text-left">{{ audit.creation_date|safe }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Start Date" %}:</label>  <div class="col-lg-6 text-left">{{ audit.start_date|safe }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Tags" %}:</label>
+        {% for tag in audit.tags.all %}
+            {% if forloop.first %}<div class="col-lg-6 text-left">{% endif %}
+                </label><span class="label label-primary">{{ tag }}</span>
+        {% endfor %}
+        </div>
+        </div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "State" %}:</label> <div class="col-lg-6 text-left">{{ audit.state|safe|lower|capfirst }}</div></div>
+    </fieldset>
+
+    <fieldset class="scheduler-border">
+    <legend class="scheduler-border">{% trans "Instances" %}&nbsp;
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalFormAnswer">
+            {% trans "New Answer"%}</button></legend>
+        <div class="table-responsive">
+            {% for instance in instances %}
+                {% if forloop.first %}
+                    <table class="table">
+            <thead>
+                <tr>
+                    <th>{% trans 'Date'%}</th>
+                    <th>{% trans 'Item number' %}</th>
+                    <th>{% trans 'State' %}</th>
+                    <th>{% trans 'Level' %}</th>
+                    <th>{% trans 'Options' %}</th>
+                </tr>
+            </thead>
+                <tbody>
+                {% endif %}
+              <tr>
+                <td>{{ instance.date }}</td>
+                <td>{{ instance.items.count }}</td>
+                <td>{{ instance.state }}</td>
+                <td>{{ instance.level }}</td>
+                <td>{% if instance.state == 'STARTED' %}
+                    <a  href="">{% trans "Evaluate" %}</a>&nbsp;
+                    <a  href="">{% trans "Finish" %}</a>
+                    {% else %}
+                        <a  href="">{% trans "View Evaluation" %}</a>
+                    {% endif %}
+                </td>
+              </tr>
+
+            {% empty %}
+             <div class="col-lg-12 text-center">{% trans "No Instances" %}</div>
+        {% endfor %}
+            </tbody>
+        </table>
+        </div>
+
+    {% if instances.paginator.num_pages != 1 %}
+        <div class="col-md-12 text-center">
+    <ul class="pagination">
+     {% if instances.has_previous %}
+            <li><a href="?page={{ instances.previous_page_number }}">&laquo;</a></li>
+          {% else %}
+            <li class="disabled"><a href="#">&laquo;</a></li>
+     {% endif %}
+      <li><a>Page {{ instances.number }} of {{ instances.paginator.num_pages }}.</a></li>
+      {% if instances.has_next %}
+            <li><a href="?page={{ instances.next_page_number }}">&raquo;</a></li>
+          {% else %}
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        {% endif %}
+    </ul>
+    {% endif %}
+    </div>
+
+    </fieldset>
+
+    <div class="col-lg-12 text-center">
+        {% if audit.state == 'INACTIVE' %}
+            <a href="{% url 'change_audit_state' audit.id %}?page={{ pageb }}" class="btn btn-default" role="button">
+            {% trans 'Change state to Active' %}</a>
+        {% elif audit.state == 'ACTIVE'%}
+            <a href="{% url 'change_audit_state' audit.id %}?page={{ pageb }}" class="btn btn-default" role="button">
+            {% trans 'Change state to Finished' %}</a>
+        {% elif audit.state == 'FINISH' %}
+            <a href="{% url 'change_audit_state' audit.id %}?page={{ pageb }}" class="btn btn-default" role="button">
+            {% trans 'Eliminate' %}</a>
+        {% endif %}
+        <a href="{% url 'list_my_audits' %}?page={{ pageb }}" class="btn btn-default" role="button">
+        {% trans 'Back' %}</a>
+    </div>
+{% endblock %}

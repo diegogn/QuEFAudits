@@ -5,9 +5,11 @@
     <div class="page-header">
         <h1>{% blocktrans with name=tag.name %}Audit's List{% endblocktrans %}</h1></div>
 {% endblock %}
-{% block heading %}{{ element.name }}{% endblock %}
+{% block heading %}{{ element.name }}&nbsp;<a href="{% url "audit_details" element.id %}?pageb={{ element_page.number }}"
+                                              class="normal-link"><span class="glyphicon glyphicon-eye-open"></span></a>
+{% endblock %}
 {% block body %}
-    <li>{{ element.creationDate }}</li>
+    <li>{{ element.creation_date }}</li>
     <li>{% trans "Auditor" %}: {{ element.auditor.get_full_name }}</li>
     <li>{% trans "Usuario" %}: {{ element.usuario.get_full_name }}</li>
     {% for tag in element.tags.all %}
