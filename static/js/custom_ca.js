@@ -1,3 +1,41 @@
+function do_ajax(url, data, success_f, error_f){
+    $.ajax({
+                    url : url, // the endpoint
+                    type : 'POST', // http method
+                    data : data, // data sent with the post request
+
+                    // handle a successful response
+                    success : success_f,
+
+                    // handle a non-successful response
+                    error : error_f
+                });
+}
+
+function success_answer(json) {
+    console.log(json);
+    $('#answer-form')[0].reset(); // remove the value from the form
+    $("#myModalFormAnswer").modal('hide');
+    $('#answers').append("<div class='col-lg-12 text-center'>"+json.name+": "+json.value+"&nbsp; <a class='normal-link' href='/audits/edit/gestor/answer/"+json.id+"'> <span class='glyphicon glyphicon-pencil'></span></a> &nbsp;<a class='normal-link' href='/audits/delete/gestor/answer/"+json.id+"'> <span class='glyphicon glyphicon-remove'></span></a></div>");
+    if(Cookies.get('django_language') == 'es'){
+              alert('Su respuesta ha sido creada correctamente.');
+          }else{
+               alert('Your answer has been created succesfully.');
+          }
+
+}
+
+function error_answer(xhr,errmsg,err) {
+    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+}
+
+function load_js(id){
+    $('#answer-form').on('submit', function(event){
+            event.preventDefault();
+            do_ajax('/audits/create/gestor/answer/'+id, {name: $('#id_name').val(), value: $('#id_value').val()}, success_answer, error_answer)
+        });
+}
+
 function hide(fields){
     $.each(fields, function(val,e){
         a = $("#id_"+e).parent().parent();

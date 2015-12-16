@@ -4,12 +4,13 @@ from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentF
 from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object
-from django.http import HttpResponse
+from django.http import JsonResponse
 from QuEFAudits import settings
 import time
 from django.db.models import Q
-from django.contrib.auth.decorators import user_passes_test
-
+from django.core.urlresolvers import resolve
+from django.core import serializers
+from django.forms.models import model_to_dict
 
 # Create your views here.
 
@@ -214,6 +215,8 @@ def item_details(request, item_id):
             file.instance = None
             file.save()
             context['okMessage'] = True
+        else:
+            context['notOk'] = True
     else:
         form = DocumentForm
     context['form'] = form
@@ -307,11 +310,16 @@ def create_answer(request, item_id):
             answer.item = item
             answer.save()
 
-            return HttpResponseRedirect('/audits/item/gestor/details/%s' % item_id)
-    else:
-        form = AnswerForm
+            response = {}
+            response['id'] = answer.id
+            response['name'] = answer.name
+            response['value'] = answer.value
 
-    return render(render,'list_tags.html', {'formA': form, 'back_url': '/audits/item/gestor/details/%s' % item_id})
+            return JsonResponse(response)
+        else:
+            return JsonResponse(serializers.serialize('json', [form])[1:-1])
+    else:
+        return JsonResponse({"sorry": "bad method"})
 
 
 @login_required(login_url=settings.LOGIN_URL)
