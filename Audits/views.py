@@ -4,7 +4,7 @@ from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentF
 from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from QuEFAudits import settings
 import time
 from django.db.models import Q
@@ -206,24 +206,36 @@ def list_tag_items(request, tag_id):
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
 def item_details(request, item_id):
     item = get_object_or_404(Item, id=item_id)
-    context = {'item': item}
-    if request.method == 'POST':
-        form = DocumentForm(request.POST, request.FILES)
-        if form.is_valid():
-            file = form.save(commit=False)
-            file.item = item
-            file.instance = None
-            file.save()
-            context['okMessage'] = True
-        else:
-            context['notOk'] = True
-    else:
-        form = DocumentForm
-    context['form'] = form
+
+    context={}
+    context['item'] = item
+    context['form'] = DocumentForm
     context['formA'] = AnswerForm
     context['page'] = request.GET.get('page')
 
     return render(request, 'item_details.html', context)
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+def create_document(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            doc = form.save(commit=False)
+            doc.item = item
+            doc.instance = None
+            doc.save()
+
+            response = {}
+            response['id'] = doc.id
+            response['filename'] = doc.filename
+            return JsonResponse(response)
+        else:
+            return JsonResponse(form.errors)
+    else:
+        return JsonResponse({"sorry": "bad method"})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -317,7 +329,7 @@ def create_answer(request, item_id):
 
             return JsonResponse(response)
         else:
-            return JsonResponse(serializers.serialize('json', [form])[1:-1])
+            return JsonResponse(form.errors)
     else:
         return JsonResponse({"sorry": "bad method"})
 

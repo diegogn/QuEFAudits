@@ -1,28 +1,78 @@
-function do_ajax(url, data, success_f, error_f){
-    $.ajax({
-                    url : url, // the endpoint
-                    type : 'POST', // http method
-                    data : data, // data sent with the post request
+function do_ajax(url, data, success_f, error_f, files){
+    if(files){
+        $.ajax({
+            url : url, // the endpoint
+            type : 'POST', // http method
+            data : data, // data sent with the post request
+            cache: false,
+            processData: false,
+            contentType: false,
+            // handle a successful response
+            success : success_f,
 
-                    // handle a successful response
-                    success : success_f,
+            // handle a non-successful response
+            error : error_f
+        });
+    }else{
+        $.ajax({
+            url : url, // the endpoint
+            type : 'POST', // http method
+            data : data, // data sent with the post request
+            // handle a successful response
+            success : success_f,
 
-                    // handle a non-successful response
-                    error : error_f
-                });
+            // handle a non-successful response
+            error : error_f
+        });
+    }
 }
 
 function success_answer(json) {
-    console.log(json);
-    $('#answer-form')[0].reset(); // remove the value from the form
-    $("#myModalFormAnswer").modal('hide');
-    $('#answers').append("<div class='col-lg-12 text-center'>"+json.name+": "+json.value+"&nbsp; <a class='normal-link' href='/audits/edit/gestor/answer/"+json.id+"'> <span class='glyphicon glyphicon-pencil'></span></a> &nbsp;<a class='normal-link' href='/audits/delete/gestor/answer/"+json.id+"'> <span class='glyphicon glyphicon-remove'></span></a></div>");
-    if(Cookies.get('django_language') == 'es'){
-              alert('Su respuesta ha sido creada correctamente.');
-          }else{
-               alert('Your answer has been created succesfully.');
-          }
+    $("*#answer_errors").remove();
+    if(!json.id){
+        $('#answer-form').find(':input').each(function(){
+            id = $(this).prop("id");
+            name = id.substring(3,id.length);
+            errors = json[name];
+            if(errors){
+                error = errors.join();
+                $("<div class='clearfix'></div><div class='alert alert-danger' id='answer_errors'><strong>"+error+"</strong></div>").insertAfter($(this).parent());
+            }
+        });
+    }else{
+        $('#answer-form')[0].reset(); // remove the value from the form
+        $("#myModalFormAnswer").modal('hide');
+        $('#answers').append("<div class='col-lg-12 text-center'>"+json.name+": "+json.value+"&nbsp; <a class='normal-link' href='/audits/edit/gestor/answer/"+json.id+"'> <span class='glyphicon glyphicon-pencil'></span></a> &nbsp;<a class='normal-link' href='/audits/delete/gestor/answer/"+json.id+"'> <span class='glyphicon glyphicon-remove'></span></a></div>");
+        if(Cookies.get('django_language') == 'es'){
+                  alert('Su respuesta ha sido creada correctamente.');
+              }else{
+                   alert('Your answer has been created succesfully.');
+              }
+        }
+}
 
+function success_doc(json) {
+    $("*#document_errors").remove();
+    if(!json.id){
+        $('#document-form').find(':input').each(function(){
+            id = $(this).prop("id");
+            name = id.substring(3,id.length);
+            errors = json[name];
+            if(errors){
+                error = errors.join();
+                $("<div class='clearfix'></div><div class='alert alert-danger' id='document_errors'><strong>"+error+"</strong></div>").insertAfter($(this).parent());
+            }
+        });
+    }else{
+        $('#document-form')[0].reset(); // remove the value from the form
+        $("#myModalForm").modal('hide');
+        $('#documents').append("<div class='glyphicon glyphicon-book col-lg-12 text-center'>"+json.filename+"&nbsp; <a href='/audits/document/delete/"+json.id+"'>x</a></div>");
+        if(Cookies.get('django_language') == 'es'){
+                  alert('Su documento ha sido creado correctamente.');
+              }else{
+                   alert('Your document has been created succesfully.');
+              }
+        }
 }
 
 function error_answer(xhr,errmsg,err) {
@@ -32,8 +82,13 @@ function error_answer(xhr,errmsg,err) {
 function load_js(id){
     $('#answer-form').on('submit', function(event){
             event.preventDefault();
-            do_ajax('/audits/create/gestor/answer/'+id, {name: $('#id_name').val(), value: $('#id_value').val()}, success_answer, error_answer)
+            do_ajax('/audits/create/gestor/answer/'+id, {name: $('#id_name').val(), value: $('#id_value').val()}, success_answer, error_answer, false);
         });
+    $('#document-form').on('submit', function(event){
+        event.preventDefault();
+        data = new FormData($('form')[0]);
+        do_ajax('/audits/document/create/'+id, data, success_doc, error_answer, true);
+    });
 }
 
 function hide(fields){

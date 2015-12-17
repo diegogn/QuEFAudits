@@ -32,7 +32,7 @@
         <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Url" %}:</label> {{ item.url|safe|default:'-' }}</div>
     </fieldset>
 
-    <fieldset class="scheduler-border">
+    <fieldset id='documents' class="scheduler-border">
     <legend class="scheduler-border">{% trans "Attached Files" %}&nbsp;
         <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm">
             {% trans "New File"%}</button></legend>
@@ -70,7 +70,7 @@
         <div class="modal-content">
           <div class="modal-header">{% trans "Create new file" %}</div>
           <div class="modal-body">
-          <form class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+          <form id='document-form' class="form-horizontal" method="post" action="" enctype="multipart/form-data">
               {% csrf_token %}
               {% for field in form %}
                 <div class="form-group">
@@ -78,10 +78,6 @@
             <div class="col-lg-6">
             {{ field }}
             </div>
-        {% if field.errors %}
-            <br>
-            <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
-        {% endif %}
         </div>
               {% endfor %}
              <input type="submit" value="Crear"/>
@@ -107,10 +103,6 @@
             <div class="col-lg-6">
             {{ field }}
             </div>
-        {% if field.errors %}
-            <br>
-            <div class="alert alert-danger"><strong>{{field.errors|escape}}</strong></div>
-        {% endif %}
         </div>
               {% endfor %}
                <input type="submit" value="Crear"/>
