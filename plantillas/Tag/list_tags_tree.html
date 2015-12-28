@@ -13,23 +13,14 @@
         font-family: "Glyphicons Halflings";
         content: "\e158";
     }
+
+    p.no-after:after{content:"";}
 </style>
 {% endblock %}
+{% block script_import %}<script type="application/javascript" src="/static/js/ajax_csrf.js"></script>{% endblock %}
 {% block scripts %}
-$("ul").on("click","li.father",function(e){
-    e.stopPropagation();
-	var style = $(this).children("ul.children").css("display");
-    if(style == 'none'){
-     	   $(this).children("ul.children").css("display",'block');
-    }else{
-     		$(this).children("ul.children").css("display",'none');
-    }
-});
-    $("li.children").on("click",function(e){
-        e.stopPropagation();
-    });
-    $("a#stop").on("click",function(e){
-        e.stopPropagation();
+    $(document).ready(function(){
+        tree_js();
     });
 {% endblock%}
 
@@ -39,10 +30,12 @@ $("ul").on("click","li.father",function(e){
     {% recursetree tags %}
         <li {% if not node.is_leaf_node %}class="father"{% else %}class="children"{% endif %}>
             {{ node.name }}({{ node.weight }})&nbsp;<a id="stop" href="{% url 'list_tag_items' node.id %}">{% trans "View Items"%}</a>&nbsp;
-            <a id="stop" class="normal-link" href="{% url 'edit_tag' node.id %}">
-    <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
-            <a id="stop" class="normal-link" href="{% url 'delete_tag' node.id %}">
-        <span class="glyphicon glyphicon-remove"></span></a>
+            {% if user == node.create_user %}
+                <a class="normal-link" href="{% url 'edit_tag' node.id %}">
+                    <span class="glyphicon glyphicon-pencil"></span></a>&nbsp;
+                <a class="normal-link delete-link" href="" name="{{ node.id }}">
+                    <span class="glyphicon glyphicon-remove"></span></a>
+            {% endif %}
             {% if not node.is_leaf_node %}
                 <ul class="children">
                     {{ children }}

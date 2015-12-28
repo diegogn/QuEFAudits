@@ -15,8 +15,10 @@
 {% endblock %}
 {% block no_found %}{% trans "There are not items" %}{% endblock %}
 {% block boton %}
-        <a href="{% url 'create_item' tag.id %}?page={{ element_page.number }}" class="btn btn-primary" role="button">
-        {% trans 'Create Item' %}</a>
+        {% if tag.create_user == user %}
+            <a href="{% url 'create_item' tag.id %}?page={{ element_page.number }}" class="btn btn-primary" role="button">
+            {% trans 'Create Item' %}</a>
+        {% endif %}
         <a href="{% url 'list_tags_tree'%}" class="btn btn-default" role="button">
         {% trans 'Back' %}</a>
 {% endblock %}

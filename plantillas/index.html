@@ -31,10 +31,10 @@
             return false;
         });
 
-          if(Cookies.get('django_language') == 'es'){
-              $('#es').css('background-color','grey');
+          if(Cookies.get('django_language') == 'en'){
+              $('#en').css('background-color','grey');
           }else{
-               $('#en').css('background-color','grey');
+               $('#es').css('background-color','grey');
           }
           {% block scripts %}{% endblock %}
       });
@@ -43,6 +43,11 @@
 </head>
 <body>
 <div class="container">
+    <noscript>
+      <p>Bienvenido a Mi Sitio</p>
+      <p>La página que estás viendo requiere para su funcionamiento el uso de JavaScript.
+    Si lo has deshabilitado intencionadamente, por favor vuelve a activarlo.</p>
+    </noscript>
   <header>
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="navbar-header">

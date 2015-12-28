@@ -1,22 +1,60 @@
 # -*- encoding: utf8 -*-
 from django.shortcuts import HttpResponseRedirect, render, get_list_or_404, get_object_or_404
-from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm
+from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm, TagEditForm
 from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object
-from django.http import JsonResponse, HttpResponse
+from django.views.decorators.csrf import ensure_csrf_cookie
+from django.http import JsonResponse
 from QuEFAudits import settings
 import time
 from django.db.models import Q
-from django.core.urlresolvers import resolve
-from django.core import serializers
-from django.forms.models import model_to_dict
+
+#User passes test functions.
+def user_audit(user, kwargs):
+    audit_id = kwargs.itervalues().next()
+    audit = get_object_or_404(Audit, id=audit_id)
+
+    return audit.gestor == user
+
+
+def user_item_owner(user, kwargs):
+    item_id = kwargs.itervalues().next()
+    item = get_object_or_404(Item, id=item_id)
+    return item.tag.create_user == user
+
+
+def item_tag_public(user, kwargs):
+    item_id = kwargs.itervalues().next()
+    item = get_object_or_404(Item, id=item_id)
+    return item.tag.public or item.tag.create_user == user
+
+
+def tag_public(user, kwargs):
+    tag_id = kwargs.itervalues().next()
+    tag = get_object_or_404(Tag, id=tag_id)
+    return tag.public or tag.create_user == user
+
+
+def user_item_tag_delete(user, kwargs):
+    item_id = kwargs.itervalues().next()
+    item = get_object_or_404(Item, id=item_id)
+
+    return item.tag.create_user == user and item.results.count() == 0
+
+def is_tag_creator(user, kwargs):
+    tag_id = kwargs.itervalues().next()
+    tag = get_object_or_404(Tag, id=tag_id)
+
+    return tag.create_user == user
+
 
 # Create your views here.
-
-
 def not_user_permission(request):
     return render(request,'not_user_permission.html')
+
+def index(request):
+    return render(request, 'welcome.html', {})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -24,6 +62,7 @@ def not_user_permission(request):
 def create_audit(request):
     if request.method == 'POST':
         form = AuditForm(request.POST)
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) & Q(public=True))
         if form.is_valid():
             audit = form.save(commit=False)
             audit.gestor = request.user
@@ -32,16 +71,34 @@ def create_audit(request):
             audit.save()
             form.save_m2m()
 
+            #Como se puede etiquetar una etiqueta padre y una hija este algoritmo elimina esa redundancia.
+            for tag in audit.tags.all():
+                if tag.parent in audit.tags.all():
+                    audit.tags.remove(tag)
+
+
+
             return HttpResponseRedirect('/audits/list/gestor/audits/?page=-1')
     else:
         form = AuditForm()
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) & Q(public=True))
     return render(request, 'create_audit.html', {'form': form, 'back_url': '/audits/list/gestor/audits/?page=%s' %
                                                                    request.GET.get('page')})
 
 
-def index(request):
-    return render(request, 'welcome.html', {})
-
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_audit)
+def delete_audit(request, audit_id):
+    audit = get_object_or_404(Audit, id=audit_id)
+    if request.method == 'POST':
+        if audit.state == 'INACTIVE':
+            audit.delete()
+            return JsonResponse({"delete": "ok"})
+        else:
+            return JsonResponse({"delete": "bad"})
+    else:
+        return JsonResponse({"sorry": "bad method"})
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.admin', login_url=settings.LOGIN_URL)
@@ -83,7 +140,7 @@ def list_my_audits(request):
     page = request.GET.get('page')
 
     try:
-        audits_page = paginator.page(page);
+        audits_page = paginator.page(page)
     except PageNotAnInteger:
         audits_page = paginator.page(1)
     except EmptyPage:
@@ -97,17 +154,28 @@ def list_my_audits(request):
 def create_tag(request):
     if request.method == 'POST':
         form = TagForm(request.POST)
+        form.fields['parent'].queryset = Tag.objects.filter(create_user=request.user)
         if form.is_valid():
-            tag = form.save()
+            tag = form.save(commit=False)
+            tag.create_user = request.user
+
+            if tag.parent:
+                tag.public = tag.parent.public
+
+            tag.save()
+            form.save_m2m()
+
             return HttpResponseRedirect('/audits/list/gestor/tags_tree')
     else:
-        form = TagForm
+        form = TagForm()
+        form.fields['parent'].queryset = Tag.objects.filter(create_user=request.user)
 
     return render(request, 'create_tag.html', {'form': form, 'back_url': '/audits/list/gestor/tags_tree'})
 
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@ensure_csrf_cookie
 def list_tags(request, tag_id):
     tags = Tag.objects.all()
 
@@ -141,6 +209,7 @@ def list_tags(request, tag_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(is_tag_creator)
 def create_item_no_form(request, tag_id):
     if request.method == 'POST':
         form = ItemCreateForm(request.POST)
@@ -186,6 +255,7 @@ def list_items(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(tag_public)
 def list_tag_items(request, tag_id):
     items = Item.objects.filter(tag_id=tag_id)
     paginator = Paginator(items, 12)
@@ -204,6 +274,7 @@ def list_tag_items(request, tag_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@ensure_csrf_cookie
 def item_details(request, item_id):
     item = get_object_or_404(Item, id=item_id)
 
@@ -255,7 +326,7 @@ def document_delete(request, document_id):
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
 def list_tag_tree(request):
-    tags = Tag.objects.all()
+    tags = Tag.objects.filter(Q(create_user=request.user) | Q(public=True))
 
     return render(request, "list_tags_tree.html", {"tags": tags})
 
@@ -267,23 +338,28 @@ def list_tag_tree(request):
 def edit_tag(request, tag_id):
     tag = get_object_or_404(Tag, id=tag_id)
     if request.method == 'POST':
-        form = TagForm(request.POST, instance=tag)
+        form = TagEditForm(request.POST, instance=tag)
         if form.is_valid():
             form.save()
             return HttpResponseRedirect('/audits/list/gestor/tags_tree')
     else:
-        form = TagForm(instance=tag)
+        form = TagEditForm(instance=tag)
 
     return render(request, "form.html", {"form": form, 'back_url': '/audits/list/gestor/tags_tree'})
 
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(is_tag_creator)
 def delete_tag(request, tag_id):
-    tag = get_object_or_404(Tag, id=tag_id)
-    tag.delete()
 
-    return HttpResponseRedirect('/audits/list/gestor/tags_tree')
+    if request.method == 'POST':
+        tag = get_object_or_404(Tag, id=tag_id)
+        tag.delete()
+
+        return JsonResponse({'message': 'ok', 'id': tag_id})
+    else:
+        return JsonResponse({'sorry': 'bad method'})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -303,11 +379,16 @@ def edit_item(request, item_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_item_tag_delete)
 def delete_item(request, item_id):
-    item = get_object_or_404(Item, id=item_id)
-    item.delete()
 
-    return HttpResponseRedirect('/audits/list/gestor/items/'+item.tag_id)
+    if request.method == 'POST':
+        item = get_object_or_404(Item, id=item_id)
+        item.delete()
+        return JsonResponse({'message': 'ok', 'tag': item.tag_id})
+
+    else:
+        return JsonResponse({'sorry': 'bad method'})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -361,12 +442,7 @@ def delete_answer(request, answer_id):
     return HttpResponseRedirect('/audits/item/gestor/details/%d' % id)
 
 
-def user_audit(user, kwargs):
-    audit_id = kwargs.itervalues().next()
-    audit = get_object_or_404(Audit, id=audit_id)
-
-    return audit.gestor == user
-
+@ensure_csrf_cookie
 @user_passes_test_object(user_audit)
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)

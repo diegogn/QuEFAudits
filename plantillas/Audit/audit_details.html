@@ -1,11 +1,22 @@
 {% extends "index.html" %}
 {% load i18n %}
+{% block scripts %}
+    $("a").css('cursor','pointer');
+    $(document).ready(function(){
+        load_js({{ audit.id }});
+    });
+{% endblock %}
 {% block style_css %}<link rel="stylesheet" type="text/css" href="/static/css/custom.css">{% endblock %}
+{% block script_import %}<script type="application/javascript" src="/static/js/ajax_csrf.js"></script> {% endblock %}
 {% block titulo %} {%  trans "Audit's details" %} {% endblock %}
 
 {% block contenido %}
-    <div class="page-header"><h1>{%  trans "Audit's details" %}</h1>
-
+    <div class="page-header"><h1>{%  trans "Audit's details" %}
+        {% if audit.state == 'INACTIVE' %}
+            &nbsp;<a class="normal-link" href='' id="delete-audit">
+            <span class="glyphicon glyphicon-remove header-gli"></span></a>
+        {% endif %}
+    </h1></div>
     <fieldset class="scheduler-border">
     <legend class="scheduler-border">{% trans "Properties" %}</legend>
         <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Name" %}:</label> <div class="col-lg-6 text-left">{{ audit.name|safe }}</div></div>
@@ -16,16 +27,20 @@
         {% for tag in audit.tags.all %}
             {% if forloop.first %}<div class="col-lg-6 text-left">{% endif %}
                 </label><span class="label label-primary">{{ tag }}</span>
+            {% if forloop.last %}</div>{% endif %}
         {% endfor %}
-        </div>
         </div>
         <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "State" %}:</label> <div class="col-lg-6 text-left">{{ audit.state|safe|lower|capfirst }}</div></div>
     </fieldset>
 
     <fieldset class="scheduler-border">
     <legend class="scheduler-border">{% trans "Instances" %}&nbsp;
+        {% if audit.state == 'ACTIVE' %}
         <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalFormAnswer">
-            {% trans "New Answer"%}</button></legend>
+            {% trans "New Answer"%}</button>
+        {% endif %}
+
+    </legend>
         <div class="table-responsive">
             {% for instance in instances %}
                 {% if forloop.first %}

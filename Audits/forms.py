@@ -5,6 +5,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 from django.utils.translation import ugettext_lazy as _
+from django.db.models import Q
 
 
 class AuditForm(forms.ModelForm):
@@ -22,6 +23,7 @@ class AuditForm(forms.ModelForm):
         super(AuditForm, self).__init__(*args, **kwargs)
         self.fields['auditor'].queryset = User.objects.filter(user_permissions__codename__exact='auditor')
         self.fields['usuario'].queryset = User.objects.filter(user_permissions__codename__exact='user')
+        self.fields['start_date'].widget = forms.DateInput(attrs={'placeholder': _("DD/MM/YYYY")})
 
     class Meta:
         model = Audit
@@ -68,10 +70,19 @@ class UserForm(UserCreationForm):
 
 
 class TagForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(TagForm, self).__init__(*args, **kwargs)
 
     class Meta:
         model = Tag
-        fields = ('name', 'parent', 'weight')
+        fields = ('name', 'parent', 'weight', 'public')
+
+
+class TagEditForm(forms.ModelForm):
+
+    class Meta:
+        model = Tag
+        fields = ('name', 'weight')
 
 
 class ItemCreateForm(forms.ModelForm):

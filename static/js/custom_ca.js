@@ -42,6 +42,7 @@ function success_answer(json) {
     }else{
         $('#answer-form')[0].reset(); // remove the value from the form
         $("#myModalFormAnswer").modal('hide');
+        $("#answer_empty_text").remove();
         $('#answers').append("<div class='col-lg-12 text-center'>"+json.name+": "+json.value+"&nbsp; <a class='normal-link' href='/audits/edit/gestor/answer/"+json.id+"'> <span class='glyphicon glyphicon-pencil'></span></a> &nbsp;<a class='normal-link' href='/audits/delete/gestor/answer/"+json.id+"'> <span class='glyphicon glyphicon-remove'></span></a></div>");
         if(Cookies.get('django_language') == 'es'){
                   alert('Su respuesta ha sido creada correctamente.');
@@ -66,6 +67,7 @@ function success_doc(json) {
     }else{
         $('#document-form')[0].reset(); // remove the value from the form
         $("#myModalForm").modal('hide');
+        $("#file_empty_text").remove();
         $('#documents').append("<div class='glyphicon glyphicon-book col-lg-12 text-center'>"+json.filename+"&nbsp; <a href='/audits/document/delete/"+json.id+"'>x</a></div>");
         if(Cookies.get('django_language') == 'es'){
                   alert('Su documento ha sido creado correctamente.');
@@ -73,6 +75,52 @@ function success_doc(json) {
                    alert('Your document has been created succesfully.');
               }
         }
+}
+
+function success_audit_delete(json) {
+    if(json.delete == 'ok'){
+        if(Cookies.get('django_language') == 'es'){
+            alert('Su auditor\u00EDa ha sido eliminada correctamente. Seras dirigido a la lista de auditor\u00EDas');
+        }else{
+            alert('Your audit has been deleted succesfully. You are redirecting to list of audits');
+        }
+        location.href = '/audits/list/gestor/audits/';
+    }else{
+        if(Cookies.get('django_language') == 'es'){
+            alert('No se ha podido eliminar la auditoría, su estado no es correcto.');
+        }else{
+            alert("Audit could not be deleted, its state is not correct.");
+        }
+    }
+}
+
+function success_item_delete(json) {
+    if (json.message == 'ok') {
+        if (Cookies.get('django_language') == 'es') {
+            alert('Su \u00EDtem ha sido eliminado correctamente. Seras dirigido a la lista de items');
+        } else {
+            alert('Your item has been deleted succesfully. You are redirecting to list of items');
+        }
+        location.href = '/audits/list/gestor/items/' + json.tag;
+    }
+}
+
+function success_tag_delete(json) {
+    if (json.message == 'ok') {
+        parent_element = $("a[name='"+json.id+"']").parent().parent();
+        if(parent_element.parent().prop('class') == 'father' & parent_element.children('li').length == 1){
+            parent_element.parent().prop('class','children');
+        }
+
+        $("a[name='"+json.id+"']").parent().remove();
+
+        element.parent().remove();
+        if (Cookies.get('django_language') == 'es') {
+            alert('Su etiqueta ha sido eliminada correctamente.');
+        } else {
+            alert('Your tag has been deleted succesfully.');
+        }
+    }
 }
 
 function error_answer(xhr,errmsg,err) {
@@ -89,7 +137,73 @@ function load_js(id){
         data = new FormData($('form')[0]);
         do_ajax('/audits/document/create/'+id, data, success_doc, error_answer, true);
     });
+    $('#delete-audit').on('click', function(event){
+        event.preventDefault();
+        do_ajax('/audits/delete/gestor/audit/'+id, null, success_audit_delete, error_answer, false);
+    });
+    $('#delete-item').on('click', function(event){
+       event.preventDefault();
+        do_ajax('/audits/delete/gestor/item/'+id, null, success_item_delete, error_answer, false);
+    });
 }
+
+function form_js(){
+    $('#id_parent').on('change', function(event){
+        selected = $('#id_parent').val();
+        if(selected == ""){
+            $('#id_public').prop('disabled', false);
+        }else{
+            $('#id_public').prop('checked',false);
+            $('#id_public').prop('disabled', true);
+        }
+    });
+
+    $('#id_parent').hover(function(event){
+        if(Cookies.get('django_language') == 'en'){
+            $(this).after("<p id='notice_text'>If you set a parent tag the public attribute will be the father's public attribute.</p>");
+        }else{
+            $(this).after("<p id='notice_text'>Si determinas una etiqueta padre el atributo p\u00FAblico ser\u00E1 el del padre.</p>");
+        }
+        $('#notice_text').css('color', 'red')
+    }, function(){
+        $('#notice_text').remove();
+    });
+}
+
+
+function tree_js(){
+    $("ul").on("click","li.father",function(e){
+        e.stopPropagation();
+        var style = $(this).children("ul.children").css("display");
+        if(style == 'none'){
+               $(this).children("ul.children").css("display",'block');
+        }else{
+                $(this).children("ul.children").css("display",'none');
+        }
+    });
+
+    $("li.children").on("click",function(e){
+        e.stopPropagation();
+    });
+
+    $("a.normal-link").on("click",function(e){
+        e.stopPropagation();
+    });
+
+    $("a#stop").on("click", function(e){
+        e.stopPropagation();
+    });
+
+    $("a.delete-link").each(function(){
+        console.log($(this).prop('name'));
+        $(this).on("click", function(e){
+            console.log('Si');
+            e.preventDefault();
+            do_ajax('/audits/delete/gestor/tag/'+$(this).prop('name'), null, success_tag_delete, error_answer, false);
+        });
+    });
+}
+
 
 function hide(fields){
     $.each(fields, function(val,e){

@@ -2,13 +2,6 @@
 {% load i18n %}
 {% block scripts %}
     $("a").css('cursor','pointer');
-    {% if okMessage %}
-        alert('{% trans "File created succesfully" %}')
-    {% elif notOk%}
-        $("#myModalForm").modal('show');
-    {% endif %}
-
-
     $(document).ready(function(){
         load_js({{ item.id }});
     });
@@ -19,10 +12,16 @@
 
 {% block contenido %}
     <div class="page-header"><h1>{%  trans "Item's details" %} &nbsp;
-        <a class="normal-link" href="{% url 'edit_item' item.id %}">
-    <span class="glyphicon glyphicon-pencil header-gli"></span></a>
-    &nbsp;<a class="normal-link" href="{% url 'delete_item' item.id %}">
-        <span class="glyphicon glyphicon-remove header-gli"></span></a></h1></div>
+        {% if item.tag.create_user == user %}
+            <a class="normal-link" href="{% url 'edit_item' item.id %}">
+            <span class="glyphicon glyphicon-pencil header-gli"></span></a>
+            {% if item.results.count == 0 %}
+                &nbsp;<a class="normal-link" href="" id="delete-item">
+                <span class="glyphicon glyphicon-remove header-gli"></span></a>
+            {% endif %}
+        {% endif %}
+    </h1></div>
+
 
     <fieldset class="scheduler-border">
     <legend class="scheduler-border">{% trans "Basic Properties" %}</legend>
@@ -34,29 +33,41 @@
 
     <fieldset id='documents' class="scheduler-border">
     <legend class="scheduler-border">{% trans "Attached Files" %}&nbsp;
-        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm">
-            {% trans "New File"%}</button></legend>
+        {% if item.tag.create_user == user %}
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm">
+            {% trans "New File"%}</button>
+        {% endif %}
+    </legend>
 
     {% for files in item.document_set.all %}
-       <div class="glyphicon glyphicon-book col-lg-12 text-center">{{ files.filename }}&nbsp;
-           <a href="{% url 'delete_document' files.id %}">x</a></div>
+       <div class="glyphicon glyphicon-book col-lg-12 text-center">{{ files.filename }}
+           {% if item.tag.create_user == user %}
+                &nbsp;
+                <a href="{% url 'delete_document' files.id %}">x</a></div>
+           {% endif %}
             {% empty %}
-            <div class="col-lg-12 text-center">{% trans "No Files attached" %}</div>
+            <div class="col-lg-12 text-center"><p id='file_empty_text'>{% trans "No Files attached" %}</p></div>
         {% endfor %}
     </fieldset>
 
     <fieldset id="answers" class="scheduler-border">
     <legend class="scheduler-border">{% trans "Answers" %}&nbsp;
-        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalFormAnswer">
-            {% trans "New Answer"%}</button></legend>
+        {% if item.tag.create_user == user %}
+            <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalFormAnswer">
+            {% trans "New Answer"%}</button>
+        {% endif %}
+    </legend>
 
     {% for answer in item.answer_set.all %}
-      <div class="col-lg-12 text-center">{{ answer }}&nbsp; <a class="normal-link" href="{% url 'edit_answer' answer.id %}">
-    <span class="glyphicon glyphicon-pencil"></span></a>
-    &nbsp;<a class="normal-link" href="{% url 'delete_answer' answer.id %}">
+      <div class="col-lg-12 text-center">{{ answer }}
+          {% if item.tag.create_user == user %}
+              &nbsp; <a class="normal-link" href="{% url 'edit_answer' answer.id %}">
+              <span class="glyphicon glyphicon-pencil"></span></a>
+              &nbsp;<a class="normal-link" href="{% url 'delete_answer' answer.id %}">
+          {% endif %}
         <span class="glyphicon glyphicon-remove"></span></a></div>
             {% empty %}
-             <div class="col-lg-12 text-center">{% trans "No Answers" %}</div>
+             <div class="col-lg-12 text-center"><p id='answer_empty_text'>{% trans "No Answers" %}</p></div>
         {% endfor %}
     </fieldset>
 

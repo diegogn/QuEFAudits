@@ -12,6 +12,7 @@
     <li>{{ element.creation_date }}</li>
     <li>{% trans "Auditor" %}: {{ element.auditor.get_full_name }}</li>
     <li>{% trans "Usuario" %}: {{ element.usuario.get_full_name }}</li>
+    <li>{% trans "State" %}: {{ element.state|safe|lower|capfirst }}</li>
     {% for tag in element.tags.all %}
         <span class="label label-primary">{{ tag.name }}</span>
         {% empty %}

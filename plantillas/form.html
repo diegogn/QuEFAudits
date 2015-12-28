@@ -1,5 +1,11 @@
 {% extends "index.html" %}
 {% load i18n %}
+{% block scripts %}
+    $(document).ready(function(){
+        form_js();
+    });
+{% endblock %}
+{% block script_import %}<script type="application/javascript" src="/static/js/custom_ca.js"></script> {% endblock %}
 {% block titulo %} Crear {% endblock %}
 {% block contenido %}
 <fieldset class="scheduler-border">

@@ -38,9 +38,11 @@ class Auditor(models.Model):
 class Tag(MPTTModel):
     name = models.CharField(_("Name"), max_length=50)
     weight = models.DecimalField(_("Weight"), max_digits=3, decimal_places=2)
+    public = models.BooleanField(_("Public"))
     #Relaciones
-    parent = TreeForeignKey('self', null=True, blank=True, related_name="children", verbose_name=_("Father Tag")
-                            , db_index=True)
+    create_user = models.ForeignKey(User, related_name='create_tags', verbose_name=_("Creator"))
+    parent = TreeForeignKey('self', null=True, blank=True, related_name="children", verbose_name=_("Father Tag"),
+                db_index=True)
 
     class MPTTMeta:
         order_insertion_by = ['name']
@@ -145,5 +147,5 @@ class Answer(models.Model):
 
 class Result(models.Model):
     instance = models.ForeignKey('Instance')
-    item = models.ForeignKey('Item')
+    item = models.ForeignKey('Item', related_name='results')
     answer = models.ForeignKey('Answer', null=True)
