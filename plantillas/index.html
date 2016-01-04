@@ -89,6 +89,9 @@
             {% if user and perms.auth.admin%}
                     <li><a href="{% url 'create_user' %}">{% trans "Register User" %}</a></li>
             {% endif %}
+            {% if user and perms.auth.user %}
+                    <li><a href="{% url 'user_audits' %}">{% trans "Audits" %}</a></li>
+                {% endif %}
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -109,7 +112,7 @@
 		    </ul>
 		</div>
 	</nav>
-  </header>	
+  </header>
 	{% block contenido %}{% endblock %}
 </div>
 </body>

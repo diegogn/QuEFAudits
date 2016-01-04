@@ -12,7 +12,7 @@
     <li>{{ element.creation_date }}</li>
     <li>{% trans "Auditor" %}: {{ element.auditor.get_full_name }}</li>
     <li>{% trans "Usuario" %}: {{ element.usuario.get_full_name }}</li>
-    <li>{% trans "State" %}: {{ element.state|safe|lower|capfirst }}</li>
+    <li>{% trans "State" %}: {{ element.state|lower|capfirst }}</li>
     {% for tag in element.tags.all %}
         <span class="label label-primary">{{ tag.name }}</span>
         {% empty %}
@@ -21,6 +21,8 @@
 {% endblock %}
 {% block no_found %}{% trans "There are not audits" %}{% endblock %}
 {% block boton %}
+    {% if perms.auth.gestor %}
         <a href="{% url 'create_audit' %}?page={{ element_page.number }}" class="btn btn-primary" role="button">
         {% trans 'Create Audit' %}</a>
+    {% endif %}
 {% endblock %}

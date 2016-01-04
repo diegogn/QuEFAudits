@@ -1,6 +1,6 @@
 __author__ = 'Diego Desarrollo'
 from django import forms
-from Audits.models import Audit, Tag, Item, Document, Answer
+from Audits.models import Audit, Tag, Item, Document, Answer, Instance
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
@@ -101,3 +101,9 @@ class AnswerForm(forms.ModelForm):
     class Meta:
         model = Answer
         fields = ('name','value')
+
+
+class InstanceForm(forms.ModelForm):
+    class Meta:
+        model = Instance
+        fields = ('date', 'level')

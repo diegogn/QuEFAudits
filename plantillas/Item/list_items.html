@@ -3,7 +3,7 @@
 {% block titulo %}{% trans "List Items" %}{% endblock %}
 {% block encabezado %}
     <div class="page-header">
-        <h1>{% blocktrans with name=tag.name %}Item's List of tag {{ name }}{% endblocktrans %}</h1></div>
+        <h1>{% trans "Item's List of tag: " %} {{ tag.name }}</h1></div>
 {% endblock %}
 {% block heading %}{{ element.name }}&nbsp;<a href="{% url "item_details" element.id %}?page={{ element_page.number }}"
                                               class="normal-link"><span class="glyphicon glyphicon-eye-open"></span></a>
@@ -11,6 +11,7 @@
 {% block body %}
     <li>{% trans "Question" %}: {{ element.question }}</li>
     <li>{% trans "Url" %}: {{ element.url|default:"-"}}</li>
+    <li>{% trans "Obligatory" %}: {{ element.obligatory|lower|capfirst|safe }}</li>
     <li>{% trans "Tag" %}: <span class="label label-primary">{{ element.tag.name }}</span></li>
 {% endblock %}
 {% block no_found %}{% trans "There are not items" %}{% endblock %}

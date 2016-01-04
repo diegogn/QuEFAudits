@@ -112,6 +112,7 @@ class Instance(models.Model):
     #Relaciones
     audit = models.ForeignKey('Audit')
     items = models.ManyToManyField('Item', through='Result', verbose_name=_("Items"))
+    tags = models.ManyToManyField('Tag', verbose_name=_("Tags"))
 
 
 class Document(models.Model):
@@ -126,9 +127,16 @@ class Document(models.Model):
 
 
 class Item(models.Model):
+    obligatory = (
+        ("SHALL", "shall"),
+        ("SHOULD", "should"),
+        ("MAY", "may")
+    )
+
     name = models.CharField(_("Name"), max_length=50)
     question = models.CharField(_("Question"), max_length=100)
     url = models.URLField(_("URL"), max_length=200,blank=True)
+    obligatory = models.CharField(_("Obligatory"), max_length=6, choices=obligatory)
     #Relaciones
     tag = models.ForeignKey('Tag', verbose_name=_("Tag"))
     def __str__(self):

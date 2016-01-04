@@ -1,21 +1,28 @@
 # -*- encoding: utf8 -*-
-from django.shortcuts import HttpResponseRedirect, render, get_list_or_404, get_object_or_404
-from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm, TagEditForm
+from django.shortcuts import HttpResponseRedirect, render, get_list_or_404, get_object_or_404, HttpResponse
+from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm, TagEditForm, InstanceForm
 from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object, permission_required_or
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 from QuEFAudits import settings
 import time
-from django.db.models import Q
+from django.db.models import Q, Min
 
 #User passes test functions.
-def user_audit(user, kwargs):
+def audit_owner(user, kwargs):
     audit_id = kwargs.itervalues().next()
     audit = get_object_or_404(Audit, id=audit_id)
 
     return audit.gestor == user
+
+def user_audit(user, kwargs):
+    audit_id = kwargs.itervalues().next()
+    audit = get_object_or_404(Audit, id=audit_id)
+
+    return audit.gestor == user or (audit.usuario == user and audit.state != 'INACTIVE') or \
+           (audit.auditor == user and audit.state != 'INACTIVE')
 
 
 def user_item_owner(user, kwargs):
@@ -62,7 +69,7 @@ def index(request):
 def create_audit(request):
     if request.method == 'POST':
         form = AuditForm(request.POST)
-        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) & Q(public=True))
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) or Q(public=True))
         if form.is_valid():
             audit = form.save(commit=False)
             audit.gestor = request.user
@@ -81,10 +88,37 @@ def create_audit(request):
             return HttpResponseRedirect('/audits/list/gestor/audits/?page=-1')
     else:
         form = AuditForm()
-        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) & Q(public=True))
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) or Q(public=True))
     return render(request, 'create_audit.html', {'form': form, 'back_url': '/audits/list/gestor/audits/?page=%s' %
                                                                    request.GET.get('page')})
 
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(audit_owner)
+def edit_audit(request, audit_id):
+    audit = get_object_or_404(Audit, id=audit_id)
+    if request.method == 'POST':
+        form = AuditForm(request.POST, instance=audit)
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) or Q(public=True))
+        if form.is_valid():
+            audit = form.save(commit=False)
+            audit.gestor = request.user
+            audit.state = 'INACTIVE'
+            audit.creation_date = time.strftime("%Y-%m-%d")
+            audit.save()
+            form.save_m2m()
+
+            #Como se puede etiquetar una etiqueta padre y una hija este algoritmo elimina esa redundancia.
+            for tag in audit.tags.all():
+                if tag.parent in audit.tags.all():
+                    audit.tags.remove(tag)
+            return HttpResponseRedirect('/audits/audit/details/%d'% audit.id)
+    else:
+        form = AuditForm(instance=audit)
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) or Q(public=True))
+
+    return render(request, 'edit_audit.html', {'form': form, 'back_url': '/audits/audit/details/%s' % audit_id})
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
@@ -445,7 +479,7 @@ def delete_answer(request, answer_id):
 @ensure_csrf_cookie
 @user_passes_test_object(user_audit)
 @login_required(login_url=settings.LOGIN_URL)
-@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@permission_required_or(['auth.gestor', 'auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
 def audit_details(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
     instances = Instance.objects.filter(audit_id=audit_id)
@@ -462,7 +496,8 @@ def audit_details(request, audit_id):
         instances_page = paginator.page(paginator.num_pages)
 
     return render(request, 'audit_details.html', {'audit': audit, 'instances': instances_page,
-                                                  'pageb': request.GET.get('pageb')})
+                                                  'pageb': request.GET.get('pageb'),
+                                                  'start_instance': audit.instance_set.filter(state='STARTED').count()})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -480,3 +515,68 @@ def audit_change_state(request, audit_id):
     audit.save()
 
     return HttpResponseRedirect('/audits/audit/details/' + audit_id)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.user', login_url=settings.LOGIN_URL)
+def list_user_audits(request):
+    audits = Audit.objects.filter(Q(usuario=request.user) & ~Q(state='INACTIVE') & ~Q(state='ELIMINATED'))
+
+    paginator = Paginator(audits, 12)
+
+    page = request.GET.get('page')
+
+    try:
+        audits_page = paginator.page(page)
+    except PageNotAnInteger:
+        audits_page = paginator.page(1)
+    except EmptyPage:
+        audits_page = paginator.page(paginator.num_pages)
+
+    return render(request, 'list_audits.html', {'element_page': audits_page})
+
+
+def create_instance(request, audit_id):
+    audit = get_object_or_404(Audit, id=audit_id)
+
+    if request.method == 'POST':
+        form = InstanceForm(request.POST)
+        if form.is_valid():
+            instance = form.save(commit=False)
+            instance.audit = audit
+            instance.state = 'STARTED'
+            instance.tags = audit.tags
+
+            #Primero comprobamos que no existe ningún item que no tenga al menos dos respuestas
+            for tag in audit.tags.all():
+                for item in tag.item_set:
+                    if item.answer_set.count() < 2:
+                        return render(request, 'item_no_answer.html')
+
+            #Ahora creamos por cada item de las etiquetas un result que servirá para su evaluación
+            for tag in audit.tags.all():
+                items = tag.item.all()
+                items2 = Item.objects.filter(tag_parent=tag)
+
+    else:
+        form = InstanceForm
+
+    return render(request, 'form.html', {'form': form, 'back_url': '/audits/audit/details/'+audit_id})
+
+
+def create_result(item_list, instance):
+    for item in item_list:
+        answer = Answer.objects.filter(item=item)[0]
+        Instance.objects.create(instance=instance, item=item, answer=answer)
+
+
+def tag_items(tags):
+    result = []
+
+    for tag in tags:
+        result.extend(Item.objects.filter(tag=tag))
+
+        if tag.children.all().count() > 0:
+            tags.extend(tag.children.all())
+
+    return result

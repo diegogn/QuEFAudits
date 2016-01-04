@@ -3,6 +3,7 @@ from Audits import views
 
 urlpatterns = [
     url(r'^create/audit/$', views.create_audit, name='create_audit'),
+    url(r'^edit/gestor/audit/(?P<audit_id>[0-9]+)$', views.edit_audit, name='edit_audit'),
     url(r'^delete/gestor/audit/(?P<audit_id>[0-9]+)$', views.delete_audit, name='delete_audit'),
     url(r'^create/user/$', views.create_user, name='create_user'),
     url(r'^list/audits/$', views.list_audits, name='list_audits'),
@@ -25,4 +26,7 @@ urlpatterns = [
     url(r'^edit/gestor/answer/(?P<answer_id>[0-9]+)$', views.edit_answer, name='edit_answer'),
     url(r'^delete/gestor/answer/(?P<answer_id>[0-9]+)$', views.delete_answer, name='delete_answer'),
     url(r'^not_user_permission/$', views.not_user_permission),
+    #Urls de usuario
+    url(r'^list/user/audits/$', views.list_user_audits, name='user_audits'),
+    url(r'^create/instance/(?P<audit_id>[0-9]+)$', views.create_instance, name='create_instance')
 ]

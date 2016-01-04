@@ -1,0 +1,7 @@
+{% extends 'index.html' %}
+{% load i18n %}
+{% block titulo %} {% trans 'Item Anwer Error' %} {% endblock %}
+{{ cont|add:"0" }}
+{% block contenido %}
+    <p>There are item that have less than two answer, please check all your item have at least two anwser</p>
+{% endblock %}

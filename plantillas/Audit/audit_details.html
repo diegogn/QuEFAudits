@@ -12,17 +12,19 @@
 
 {% block contenido %}
     <div class="page-header"><h1>{%  trans "Audit's details" %}
-        {% if audit.state == 'INACTIVE' %}
+        {% if audit.state == 'INACTIVE' and perms.auth.gestor %}
+            <a class="normal-link" href="{% url 'edit_audit' audit.id %}">
+            <span class="glyphicon glyphicon-pencil header-gli"></span></a>
             &nbsp;<a class="normal-link" href='' id="delete-audit">
             <span class="glyphicon glyphicon-remove header-gli"></span></a>
         {% endif %}
     </h1></div>
     <fieldset class="scheduler-border">
     <legend class="scheduler-border">{% trans "Properties" %}</legend>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Name" %}:</label> <div class="col-lg-6 text-left">{{ audit.name|safe }}</div></div>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Description" %}:</label>  <div class="col-lg-6 text-left">{{ audit.description|safe|default:'-' }}</div></div>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Creation Date" %}:</label>  <div class="col-lg-6 text-left">{{ audit.creation_date|safe }}</div></div>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Start Date" %}:</label>  <div class="col-lg-6 text-left">{{ audit.start_date|safe }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Name" %}:</label> <div class="col-lg-6 text-left">{{ audit.name }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Description" %}:</label>  <div class="col-lg-6 text-left">{{ audit.description|default:'-' }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Creation Date" %}:</label>  <div class="col-lg-6 text-left">{{ audit.creation_date }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Start Date" %}:</label>  <div class="col-lg-6 text-left">{{ audit.start_date }}</div></div>
         <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Tags" %}:</label>
         {% for tag in audit.tags.all %}
             {% if forloop.first %}<div class="col-lg-6 text-left">{% endif %}
@@ -30,14 +32,13 @@
             {% if forloop.last %}</div>{% endif %}
         {% endfor %}
         </div>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "State" %}:</label> <div class="col-lg-6 text-left">{{ audit.state|safe|lower|capfirst }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "State" %}:</label> <div class="col-lg-6 text-left">{{ audit.state|lower|capfirst }}</div></div>
     </fieldset>
 
     <fieldset class="scheduler-border">
     <legend class="scheduler-border">{% trans "Instances" %}&nbsp;
-        {% if audit.state == 'ACTIVE' %}
-        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalFormAnswer">
-            {% trans "New Answer"%}</button>
+        {% if audit.state == 'ACTIVE' and start_instance == 0 and user == audit.usuario or user == audit.auditor %}
+            <a href="{% url 'create_instance' audit.id %}" class="btn btn-primary btn-xs">{% trans "New Instance"%}</a>
         {% endif %}
 
     </legend>
@@ -97,11 +98,12 @@
 
     </fieldset>
 
+    {% if perms.auth.gestor %}
     <div class="col-lg-12 text-center">
         {% if audit.state == 'INACTIVE' %}
             <a href="{% url 'change_audit_state' audit.id %}?page={{ pageb }}" class="btn btn-default" role="button">
             {% trans 'Change state to Active' %}</a>
-        {% elif audit.state == 'ACTIVE'%}
+        {% elif audit.state == 'ACTIVE' and start_instance == 0%}
             <a href="{% url 'change_audit_state' audit.id %}?page={{ pageb }}" class="btn btn-default" role="button">
             {% trans 'Change state to Finished' %}</a>
         {% elif audit.state == 'FINISH' %}
@@ -111,4 +113,5 @@
         <a href="{% url 'list_my_audits' %}?page={{ pageb }}" class="btn btn-default" role="button">
         {% trans 'Back' %}</a>
     </div>
+    {% endif %}
 {% endblock %}

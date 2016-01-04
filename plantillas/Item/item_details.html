@@ -25,10 +25,10 @@
 
     <fieldset class="scheduler-border">
     <legend class="scheduler-border">{% trans "Basic Properties" %}</legend>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Name" %}:</label> {{ item.name|safe }}</div>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Question" %}:</label> {{ item.question|safe }}</div>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Tag" %}:</label> {{ item.tag|safe }}</div>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Url" %}:</label> {{ item.url|safe|default:'-' }}</div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Name" %}:</label> {{ item.name }}</div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Question" %}:</label> {{ item.question }}</div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Tag" %}:</label> {{ item.tag }}</div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "Url" %}:</label> {{ item.url|default:'-' }}</div>
     </fieldset>
 
     <fieldset id='documents' class="scheduler-border">
