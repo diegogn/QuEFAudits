@@ -106,4 +106,4 @@ class AnswerForm(forms.ModelForm):
 class InstanceForm(forms.ModelForm):
     class Meta:
         model = Instance
-        fields = ('date', 'level')
+        fields = ('level',)

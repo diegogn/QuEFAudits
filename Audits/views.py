@@ -8,7 +8,11 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 from QuEFAudits import settings
 import time
-from django.db.models import Q, Min
+from django.db.models import Q, Count
+from django.db import transaction
+from exceptions import *
+
+level = {'LOW': ['SHALL'], 'MEDIUM': ['SHALL', 'SHOULD'], 'HIGH': ['SHALL', 'SHOULD', 'MAY']}
 
 #User passes test functions.
 def audit_owner(user, kwargs):
@@ -17,12 +21,19 @@ def audit_owner(user, kwargs):
 
     return audit.gestor == user
 
-def user_audit(user, kwargs):
+def user_audit_details(user, kwargs):
     audit_id = kwargs.itervalues().next()
     audit = get_object_or_404(Audit, id=audit_id)
 
     return audit.gestor == user or (audit.usuario == user and audit.state != 'INACTIVE') or \
            (audit.auditor == user and audit.state != 'INACTIVE')
+
+
+def user_audit_create_instance(user, kwargs):
+    audit_id = kwargs.itervalues().next()
+    audit = get_object_or_404(Audit, id=audit_id)
+
+    return audit.usuario == user or audit.auditor == user and audit.state != 'INACTIVE'
 
 
 def user_item_owner(user, kwargs):
@@ -122,7 +133,7 @@ def edit_audit(request, audit_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
-@user_passes_test_object(user_audit)
+@user_passes_test_object(audit_owner)
 def delete_audit(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
     if request.method == 'POST':
@@ -477,7 +488,7 @@ def delete_answer(request, answer_id):
 
 
 @ensure_csrf_cookie
-@user_passes_test_object(user_audit)
+@user_passes_test_object(user_audit_details)
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required_or(['auth.gestor', 'auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
 def audit_details(request, audit_id):
@@ -536,47 +547,66 @@ def list_user_audits(request):
     return render(request, 'list_audits.html', {'element_page': audits_page})
 
 
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required_or(['auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_audit_create_instance)
+@transaction.atomic
 def create_instance(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
 
     if request.method == 'POST':
         form = InstanceForm(request.POST)
         if form.is_valid():
-            instance = form.save(commit=False)
-            instance.audit = audit
-            instance.state = 'STARTED'
-            instance.tags = audit.tags
+            try:
+                with transaction.atomic():
+                    instance = form.save(commit=False)
+                    instance.date = time.strftime("%Y-%m-%d")
+                    instance.audit = audit
+                    instance.state = 'STARTED'
+                    instance.save()
+                    form.save_m2m()
+                    instance.tags = audit.tags.all()
+                    #Método que se usa para asignar las etiquetas con preguntas y
+                    tag_items(instance.tags, instance)
+                    #Si todas las etiquetas se eliminan de la instancia no se puede crear una instancia.
+                    if instance.tags.count() == 0:
+                        raise InstanceCreationErrorTag('Ninguna etiqueta tiene preguntas a evaluar')
 
-            #Primero comprobamos que no existe ningún item que no tenga al menos dos respuestas
-            for tag in audit.tags.all():
-                for item in tag.item_set:
-                    if item.answer_set.count() < 2:
-                        return render(request, 'item_no_answer.html')
+            except InstanceCreationErrorTag:
+                return render(request, 'item_no_answer.html')
 
-            #Ahora creamos por cada item de las etiquetas un result que servirá para su evaluación
-            for tag in audit.tags.all():
-                items = tag.item.all()
-                items2 = Item.objects.filter(tag_parent=tag)
-
+            return HttpResponseRedirect('/audits/audit/details/'+audit_id)
     else:
         form = InstanceForm
 
     return render(request, 'form.html', {'form': form, 'back_url': '/audits/audit/details/'+audit_id})
 
-
+#Por cada item de la lista creamos un result al cual se le asigna la respuesta de menor valor que es la por defecto.
 def create_result(item_list, instance):
     for item in item_list:
-        answer = Answer.objects.filter(item=item)[0]
-        Instance.objects.create(instance=instance, item=item, answer=answer)
+            answer = Answer.objects.filter(item=item).order_by('value')
+            Result.objects.create(instance=instance, item=item, answer=answer[0])
 
-
-def tag_items(tags):
-    result = []
-
+'''Se encarga de recorrer la lista de etiquetas de la auditoría, obtener de cada uno los items suyos y los de sus
+    hijos que cumplan: 1) que la obligatoriedad es la adecuada según el nivel de auditoría a realizar, 2) que el item
+    tenga al menos dos respuestas para poder ser evaluado. Y al obtenerlo se crea un objeto result por cada item.
+'''
+def tag_items(tags, instance):
     for tag in tags:
-        result.extend(Item.objects.filter(tag=tag))
+        #get_items: método que devuelve los items de la etiqueta, tanto los propios como los de los hijos.
+        items = get_items(tag, level[instance.level])
+        if items.__len__() == 0:
+            #Si la tag no tiene preguntas para evaluar (también se cuentan las de los hijos) se elimina de la instancia
+            instance.tags.remove(tag)
+        else:
+            create_result(items, instance)
 
-        if tag.children.all().count() > 0:
-            tags.extend(tag.children.all())
-
+#método que devuelve los items de la etiqueta, tanto los propios como los de los hijos.
+def get_items(tag, ob):
+    result = []
+    result.extend(tag.item_set.annotate(c=Count('answer')).filter(Q(c__gte=2) and Q(obligatory__in=ob)))
+    children = tag.children.all()
+    if children.count > 0:
+        for child in children:
+            result.extend(get_items(child))
     return result
