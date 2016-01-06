@@ -25,9 +25,14 @@ def user_audit_details(user, kwargs):
     audit_id = kwargs.itervalues().next()
     audit = get_object_or_404(Audit, id=audit_id)
 
-    return audit.gestor == user or (audit.usuario == user and audit.state != 'INACTIVE') or \
-           (audit.auditor == user and audit.state != 'INACTIVE')
+    if user.has_perm('auth.gestor'):
+        return audit.gestor == user and audit.state != 'ELIMINATED'
+    elif user.has_perm('auth.user'):
+        return audit.usuario == user and audit.state != 'INACTIVE' and audit.state != 'ELIMINATED'
+    elif user.has_perm('auth.auditor'):
+        return audit.auditor == user and audit.state != 'INACTIVE' and audit.state != 'ELIMINATED'
 
+    return False
 
 def user_audit_create_instance(user, kwargs):
     audit_id = kwargs.itervalues().next()
@@ -35,6 +40,12 @@ def user_audit_create_instance(user, kwargs):
 
     return audit.usuario == user or audit.auditor == user and audit.state != 'INACTIVE'
 
+
+def user_auditor_finish_instance(user, kwargs):
+    instance_id = kwargs.itervalues().next()
+    instance = get_object_or_404(Instance, id=instance_id)
+
+    return instance.audit.usuario == user or instance.audit.auditor == user and instance.state == 'STARTED'
 
 def user_item_owner(user, kwargs):
     item_id = kwargs.itervalues().next()
@@ -488,9 +499,9 @@ def delete_answer(request, answer_id):
 
 
 @ensure_csrf_cookie
-@user_passes_test_object(user_audit_details)
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required_or(['auth.gestor', 'auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_audit_details)
 def audit_details(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
     instances = Instance.objects.filter(audit_id=audit_id)
@@ -567,7 +578,7 @@ def create_instance(request, audit_id):
                     form.save_m2m()
                     instance.tags = audit.tags.all()
                     #Método que se usa para asignar las etiquetas con preguntas y
-                    tag_items(instance.tags, instance)
+                    tag_items(instance.tags.all(), instance)
                     #Si todas las etiquetas se eliminan de la instancia no se puede crear una instancia.
                     if instance.tags.count() == 0:
                         raise InstanceCreationErrorTag('Ninguna etiqueta tiene preguntas a evaluar')
@@ -610,3 +621,36 @@ def get_items(tag, ob):
         for child in children:
             result.extend(get_items(child))
     return result
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required_or(['auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_auditor_finish_instance)
+def evaluate_instance(request, instance_id):
+
+    results = Result.objects.filter(instance_id=instance_id)
+
+    paginator = Paginator(results, 12)
+
+    page = request.GET.get('page')
+
+    try:
+        results_page = paginator.page(page)
+    except PageNotAnInteger:
+        results_page = paginator.page(1)
+    except EmptyPage:
+        results_page = paginator.page(paginator.num_pages)
+
+    return render(request, 'evaluate_instance.html', {'results': results_page, 'instance_id': instance_id})
+
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required_or(['auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_auditor_finish_instance)
+def finish_instance(request, instance_id):
+    instance = get_object_or_404(Instance, id=instance_id)
+    instance.state = 'FINISHED'
+    instance.save()
+
+    return HttpResponseRedirect('/audits/audit/details/%d' % instance.audit.id)

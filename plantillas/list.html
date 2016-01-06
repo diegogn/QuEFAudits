@@ -1,7 +1,6 @@
 {% extends 'index.html' %}
 {% load i18n %}
 {% block titulo %} Listar {% endblock %}
-{{ cont|add:"0" }}
 {% block contenido %}
 
     {% block encabezado %}{% endblock %}
@@ -35,7 +34,7 @@
           {% else %}
             <li class="disabled"><a href="#">&raquo;</a></li>
         {% endif %}
-    </ul>
+    </ul></div>
     {% endif %}
-    </div>
+
 {% endblock %}

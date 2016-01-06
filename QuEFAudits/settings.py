@@ -60,7 +60,8 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [os.path.join(BASE_DIR,'plantillas'), os.path.join(BASE_DIR,'plantillas/Audit'),
-                 os.path.join(BASE_DIR,'plantillas/Tag'), os.path.join(BASE_DIR,'plantillas/Item')],
+                 os.path.join(BASE_DIR,'plantillas/Tag'), os.path.join(BASE_DIR,'plantillas/Item'),
+                 os.path.join(BASE_DIR,'plantillas/Instance')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -26,7 +26,9 @@ urlpatterns = [
     url(r'^edit/gestor/answer/(?P<answer_id>[0-9]+)$', views.edit_answer, name='edit_answer'),
     url(r'^delete/gestor/answer/(?P<answer_id>[0-9]+)$', views.delete_answer, name='delete_answer'),
     url(r'^not_user_permission/$', views.not_user_permission),
-    #Urls de usuario
+    #Urls de usuario y auditor
     url(r'^list/user/audits/$', views.list_user_audits, name='user_audits'),
-    url(r'^create/instance/(?P<audit_id>[0-9]+)$', views.create_instance, name='create_instance')
+    url(r'^create/instance/(?P<audit_id>[0-9]+)$', views.create_instance, name='create_instance'),
+    url(r'^evaluate/instance/(?P<instance_id>[0-9]+)$', views.evaluate_instance, name='evaluate_instance'),
+    url(r'^finish/instance/(?P<instance_id>[0-9]+)$', views.finish_instance, name='finish_instance'),
 ]

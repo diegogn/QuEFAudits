@@ -62,12 +62,19 @@
                 <td>{{ instance.items.count }}</td>
                 <td>{{ instance.state }}</td>
                 <td>{{ instance.level }}</td>
-                <td>{% if instance.state == 'STARTED' %}
-                    <a  href="">{% trans "Evaluate" %}</a>&nbsp;
-                    <a  href="">{% trans "Finish" %}</a>
-                    {% else %}
+                <td>{% if instance.audit.usuario == user or instance.audit.auditor == user%}
+                    {% if instance.state == 'STARTED' %}
+                    <a  href="{% url 'evaluate_instance' instance.id %}">{% trans "Evaluate" %}</a>&nbsp;
+                    <a  href="{% url 'finish_instance' instance.id %}">{% trans "Finish" %}</a>
+                    {% elif instance.state == 'FINISHED' and instance.audit.auditor == user%}
                         <a  href="">{% trans "View Evaluation" %}</a>
+                    {% else %}
+                        -
                     {% endif %}
+                    {% else %}
+                        -
+                {% endif %}
+
                 </td>
               </tr>
 
