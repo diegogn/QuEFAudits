@@ -11,6 +11,7 @@ import time
 from django.db.models import Q, Count
 from django.db import transaction
 from exceptions import *
+from django.core.exceptions import *
 
 level = {'LOW': ['SHALL'], 'MEDIUM': ['SHALL', 'SHOULD'], 'HIGH': ['SHALL', 'SHOULD', 'MAY']}
 
@@ -619,7 +620,7 @@ def get_items(tag, ob):
     children = tag.children.all()
     if children.count > 0:
         for child in children:
-            result.extend(get_items(child))
+            result.extend(get_items(child, ob))
     return result
 
 
@@ -630,7 +631,7 @@ def evaluate_instance(request, instance_id):
 
     results = Result.objects.filter(instance_id=instance_id)
 
-    paginator = Paginator(results, 12)
+    paginator = Paginator(results, 3)
 
     page = request.GET.get('page')
 
@@ -641,7 +642,8 @@ def evaluate_instance(request, instance_id):
     except EmptyPage:
         results_page = paginator.page(paginator.num_pages)
 
-    return render(request, 'evaluate_instance.html', {'results': results_page, 'instance_id': instance_id})
+    return render(request, 'evaluate_instance.html', {'results': results_page,
+                                                      'instance': get_object_or_404(Instance,id=instance_id)})
 
 
 
@@ -654,3 +656,25 @@ def finish_instance(request, instance_id):
     instance.save()
 
     return HttpResponseRedirect('/audits/audit/details/%d' % instance.audit.id)
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required_or(['auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
+def evaluate_item(request):
+    if request.method == 'POST':
+        post = request.POST
+        result_id = post['result']
+        answer_id = post['answer']
+        answer = get_object_or_404(Answer, id=answer_id)
+        result = get_object_or_404(Result, id=result_id)
+        expr = answer in result.item.answer_set.all()
+        if (result.instance.audit.usuario == request.user or result.instance.audit.auditor == request.user) and expr:
+            result.answer = answer
+            result.save()
+        else:
+            raise PermissionDenied()
+
+        return JsonResponse({'message': 'ok'})
+
+    else:
+        return JsonResponse({"sorry": "bad method"})

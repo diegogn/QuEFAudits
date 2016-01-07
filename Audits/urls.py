@@ -31,4 +31,5 @@ urlpatterns = [
     url(r'^create/instance/(?P<audit_id>[0-9]+)$', views.create_instance, name='create_instance'),
     url(r'^evaluate/instance/(?P<instance_id>[0-9]+)$', views.evaluate_instance, name='evaluate_instance'),
     url(r'^finish/instance/(?P<instance_id>[0-9]+)$', views.finish_instance, name='finish_instance'),
+    url(r'^evaluate/item/$', views.evaluate_item, name='evaluate_item'),
 ]

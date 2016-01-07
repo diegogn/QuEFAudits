@@ -114,7 +114,6 @@ function success_tag_delete(json) {
 
         $("a[name='"+json.id+"']").parent().remove();
 
-        element.parent().remove();
         if (Cookies.get('django_language') == 'es') {
             alert('Su etiqueta ha sido eliminada correctamente.');
         } else {
@@ -123,8 +122,16 @@ function success_tag_delete(json) {
     }
 }
 
+function success_item_evaluate(json){
+        if (Cookies.get('django_language') == 'es') {
+            alert('Respuesta guardada correctamente.');
+        } else {
+            alert('Answer save correctly.');
+        }
+}
+
 function error_answer(xhr,errmsg,err) {
-    console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
+     console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
 }
 
 function load_js(id){
@@ -144,6 +151,14 @@ function load_js(id){
     $('#delete-item').on('click', function(event){
        event.preventDefault();
         do_ajax('/audits/delete/gestor/item/'+id, null, success_item_delete, error_answer, false);
+    });
+
+    $("form#result-form").each(function(){
+        $(this).on("submit", function(e){
+            e.preventDefault();
+            data = {answer: $("input:radio:checked", this).val(), result: $(this).prop('name')};
+            do_ajax('/audits/evaluate/item/', data, success_item_evaluate, error_answer, false);
+        });
     });
 }
 
@@ -195,9 +210,8 @@ function tree_js(){
     });
 
     $("a.delete-link").each(function(){
-        console.log($(this).prop('name'));
+
         $(this).on("click", function(e){
-            console.log('Si');
             e.preventDefault();
             do_ajax('/audits/delete/gestor/tag/'+$(this).prop('name'), null, success_tag_delete, error_answer, false);
         });
