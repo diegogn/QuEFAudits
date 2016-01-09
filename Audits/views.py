@@ -623,27 +623,33 @@ def get_items(tag, ob):
             result.extend(get_items(child, ob))
     return result
 
+def get_results(tag, instance):
+    result = []
+    result.extend(Result.objects.filter(instance=instance).filter(item__tag=tag))
+    children = tag.children.all()
+    if children.count > 0:
+        for child in children:
+            result.extend(get_results(child, instance))
+    return result
+
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required_or(['auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
 @user_passes_test_object(user_auditor_finish_instance)
 def evaluate_instance(request, instance_id):
+    instance = get_object_or_404(Instance,id=instance_id)
+    q = request.GET.get('q')
+    if q:
+        tags = Tag.objects.filter(name__icontains=q)
+        results = []
+        for tag in tags:
+            results.extend(get_results(tag,instance))
+    else:
+        results = Result.objects.filter(instance_id=instance_id)
 
-    results = Result.objects.filter(instance_id=instance_id)
 
-    paginator = Paginator(results, 3)
-
-    page = request.GET.get('page')
-
-    try:
-        results_page = paginator.page(page)
-    except PageNotAnInteger:
-        results_page = paginator.page(1)
-    except EmptyPage:
-        results_page = paginator.page(paginator.num_pages)
-
-    return render(request, 'evaluate_instance.html', {'results': results_page,
-                                                      'instance': get_object_or_404(Instance,id=instance_id)})
+    return render(request, 'evaluate_instance.html', {'results': results,
+                                                      'instance': instance})
 
 
 

@@ -160,6 +160,11 @@ function load_js(id){
             do_ajax('/audits/evaluate/item/', data, success_item_evaluate, error_answer, false);
         });
     });
+
+    $("#tag-filter").on('submit',function(e){
+        e.preventDefault();
+        location.href ='/audits/evaluate/instance/'+id+'?q='+$('#search').val();
+    })
 }
 
 function form_js(){
