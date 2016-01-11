@@ -15,8 +15,8 @@ urlpatterns = [
     url(r'^create/gestor/item/(?P<tag_id>[0-9]+)$', views.create_item_no_form, name='create_item'),
     url(r'^list/gestor/items/(?P<tag_id>[0-9]+)$', views.list_tag_items, name='list_tag_items'),
     url(r'^item/gestor/details/(?P<item_id>[0-9]+)$', views.item_details, name='item_details'),
-    url(r'^document/create/(?P<item_id>[0-9]+)$', views.create_document, name='create_document'),
-    url(r'^document/delete/(?P<document_id>[0-9]+)$', views.document_delete, name='delete_document'),
+    url(r'^document/gestor/create/(?P<item_id>[0-9]+)$', views.create_document, name='create_document'),
+    url(r'^document/gestor/delete/(?P<document_id>[0-9]+)$', views.document_delete, name='delete_document'),
     url(r'^list/gestor/tags_tree$', views.list_tag_tree, name='list_tags_tree'),
     url(r'^edit/gestor/tag/(?P<tag_id>[0-9]+)$', views.edit_tag, name='edit_tag'),
     url(r'^delete/gestor/tag/(?P<tag_id>[0-9]+)$', views.delete_tag, name='delete_tag'),
@@ -28,8 +28,11 @@ urlpatterns = [
     url(r'^not_user_permission/$', views.not_user_permission),
     #Urls de usuario y auditor
     url(r'^list/user/audits/$', views.list_user_audits, name='user_audits'),
+    url(r'^list/auditor/audits/$', views.list_auditor_audits, name='auditor_audits'),
     url(r'^create/instance/(?P<audit_id>[0-9]+)$', views.create_instance, name='create_instance'),
     url(r'^evaluate/instance/(?P<instance_id>[0-9]+)$', views.evaluate_instance, name='evaluate_instance'),
     url(r'^finish/instance/(?P<instance_id>[0-9]+)$', views.finish_instance, name='finish_instance'),
     url(r'^evaluate/item/$', views.evaluate_item, name='evaluate_item'),
+    url(r'^view/auditor/evaluation/(?P<instance_id>[0-9]+)$', views.view_evaluation, name='view_evaluation'),
+    url(r'^document/auditor/create/(?P<instance_id>[0-9]+)$', views.document_auditor_create, name='document__auditor_create'),
 ]

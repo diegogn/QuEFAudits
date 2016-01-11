@@ -67,7 +67,7 @@
                     <a  href="{% url 'evaluate_instance' instance.id %}">{% trans "Evaluate" %}</a>&nbsp;
                     <a  href="{% url 'finish_instance' instance.id %}">{% trans "Finish" %}</a>
                     {% elif instance.state == 'FINISHED' and instance.audit.auditor == user%}
-                        <a  href="">{% trans "View Evaluation" %}</a>
+                        <a  href="{% url 'view_evaluation' instance.id%}">{% trans "View Evaluation" %}</a>
                     {% else %}
                         -
                     {% endif %}
@@ -100,8 +100,9 @@
             <li class="disabled"><a href="#">&raquo;</a></li>
         {% endif %}
     </ul>
+        </div>
     {% endif %}
-    </div>
+
 
     </fieldset>
 
@@ -120,5 +121,13 @@
         <a href="{% url 'list_my_audits' %}?page={{ pageb }}" class="btn btn-default" role="button">
         {% trans 'Back' %}</a>
     </div>
+    {% endif %}
+    {% if perms.auth.user %}
+        <div class="text-center"><a href="{% url 'user_audits' %}?page={{ pageb }}" class="btn btn-default" role="button">
+        {% trans 'Back' %}</a></div>
+    {% endif %}
+    {% if perms.auth.auditor %}
+        <div class="text-center"><a href="{% url 'auditor_audits' %}?page={{ pageb }}" class="btn btn-default" role="button">
+        {% trans 'Back' %}</a></div>
     {% endif %}
 {% endblock %}

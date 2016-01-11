@@ -1,0 +1,96 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% block scripts %}
+    $(document).ready(function(){
+        load_js({{ instance.id }});
+    });
+{% endblock %}
+{% block script_import %}<script type="application/javascript" src="/static/js/ajax_csrf.js"></script>{% endblock %}
+{% block contenido %}
+    <div class="page-header"><h1>{%  trans "Stadistics" %}</h1></div>
+    <fieldset class="scheduler-border col-lg-6">
+    <legend class="scheduler-border">{% trans "Responses" %}</legend>
+        {% for result in results %}
+            {% if forloop.first %}
+                <table class="table-responsive table-center">
+            {% endif %}
+            <tr>
+                <td>{{ result.item.name }} -> {{ result.answer.name}}({{ result.answer.value }})</td>
+            </tr>
+            {% if forloop.last%}
+                </table>
+            {% endif %}
+        {% endfor %}
+        {% if results.paginator.num_pages != 1 %}
+        <div class="col-md-12 text-center">
+    <ul class="pagination">
+     {% if results.has_previous %}
+            <li><a href="?page={{ results.previous_page_number }}">&laquo;</a></li>
+          {% else %}
+            <li class="disabled"><a href="#">&laquo;</a></li>
+     {% endif %}
+      <li><a>Page {{ results.number }} of {{ results.paginator.num_pages }}.</a></li>
+      {% if results.has_next %}
+            <li><a href="?page={{ results.next_page_number }}">&raquo;</a></li>
+          {% else %}
+            <li class="disabled"><a href="#">&raquo;</a></li>
+        {% endif %}
+    </ul>
+        </div>
+    {% endif %}
+    </fieldset>
+    <div class="clearfix"></div>
+    <h3>{% trans 'Attached Files' %}
+        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm">
+            {% trans "New File"%}</button>
+    </h3>
+    <div id="documents">
+    {% for file in instance.document_set.all %}
+        {% if forloop.first %}
+                <table id='document-table' class="table-responsive table-center">
+                <tr>
+        {% endif %}
+            <td><div class="glyphicon glyphicon-book">{{ file.filename }}
+                &nbsp;
+                <a href="{% url 'delete_document' file.id %}">x</a></div></td>
+        {% if forloop.counter|divisibleby:"4" %}
+            </tr>
+        {% endif %}
+        {% if forloop.last%}
+                </table>
+        {% endif %}
+        {% empty %}
+            <div class="col-lg-12 text-center"><p id='file_empty_text'>{% trans "No Files attached" %}</p></div>
+    {% endfor %}
+    </div>
+    <div class="clearfix"></div>
+    </br></br>
+    <div class="text-center"><a href="{% url 'audit_details' instance.audit.id %}?page={{ pageb }}" class="btn btn-default" role="button">
+        {% trans 'Back' %}</a></div>
+
+    <div class="modal fade" id="myModalForm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+          <div class="modal-header">{% trans "Create new file" %}</div>
+          <div class="modal-body">
+          <form id='document-form-instance' class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+              {% csrf_token %}
+              {% for field in form %}
+                <div class="form-group">
+        <label class="col-lg-6 control-label" for="{{ field.name }}">{{ field.label}}:</label>
+            <div class="col-lg-6">
+            {{ field }}
+            </div>
+        </div>
+              {% endfor %}
+             <input type="submit" value="Crear"/>
+          </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">{% trans "Close" %}</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}

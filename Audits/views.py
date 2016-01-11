@@ -48,6 +48,14 @@ def user_auditor_finish_instance(user, kwargs):
 
     return instance.audit.usuario == user or instance.audit.auditor == user and instance.state == 'STARTED'
 
+
+def auditor_view_evaluation_instance(user, kwargs):
+    instance_id = kwargs.itervalues().next()
+    instance = get_object_or_404(Instance, id=instance_id)
+
+    return instance.audit.auditor == user and instance.state == 'FINISHED'
+
+
 def user_item_owner(user, kwargs):
     item_id = kwargs.itervalues().next()
     item = get_object_or_404(Item, id=item_id)
@@ -367,18 +375,20 @@ def create_document(request, item_id):
 
 
 @login_required(login_url=settings.LOGIN_URL)
-@permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@permission_required_or(['auth.gestor', 'auth.auditor'], login_url=settings.LOGIN_URL)
 def document_delete(request, document_id):
     document = get_object_or_404(Document, id=document_id)
 
-    if document.item:
+    if request.user.has_perm('auth.gestor') and document.item.tag.create_user == request.user:
         iden = document.item.id
-    else:
+        document.delete()
+        return HttpResponseRedirect('/audits/item/gestor/details/%d' % iden)
+    elif request.user.has_perm('auth.auditor') and document.instance.audit.auditor == request.user:
         iden = document.instance.id
-
-    document.delete()
-
-    return HttpResponseRedirect('/audits/item/gestor/details/%d' % iden)
+        document.delete()
+        return HttpResponseRedirect('/audits/view/auditor/evaluation/%d' % iden)
+    else:
+        raise PermissionDenied()
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
@@ -560,6 +570,25 @@ def list_user_audits(request):
 
 
 @login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.auditor', login_url=settings.LOGIN_URL)
+def list_auditor_audits(request):
+    audits = Audit.objects.filter(Q(auditor=request.user) & ~Q(state='INACTIVE') & ~Q(state='ELIMINATED'))
+
+    paginator = Paginator(audits, 12)
+
+    page = request.GET.get('page')
+
+    try:
+        audits_page = paginator.page(page)
+    except PageNotAnInteger:
+        audits_page = paginator.page(1)
+    except EmptyPage:
+        audits_page = paginator.page(paginator.num_pages)
+
+    return render(request, 'list_audits.html', {'element_page': audits_page})
+
+
+@login_required(login_url=settings.LOGIN_URL)
 @permission_required_or(['auth.user', 'auth.auditor'], login_url=settings.LOGIN_URL)
 @user_passes_test_object(user_audit_create_instance)
 @transaction.atomic
@@ -673,8 +702,7 @@ def evaluate_item(request):
         answer_id = post['answer']
         answer = get_object_or_404(Answer, id=answer_id)
         result = get_object_or_404(Result, id=result_id)
-        expr = answer in result.item.answer_set.all()
-        if (result.instance.audit.usuario == request.user or result.instance.audit.auditor == request.user) and expr:
+        if (result.instance.audit.usuario == request.user or result.instance.audit.auditor == request.user) and answer in result.item.answer_set.all():
             result.answer = answer
             result.save()
         else:
@@ -682,5 +710,47 @@ def evaluate_item(request):
 
         return JsonResponse({'message': 'ok'})
 
+    else:
+        return JsonResponse({"sorry": "bad method"})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.auditor',login_url=settings.LOGIN_URL)
+@user_passes_test_object(auditor_view_evaluation_instance)
+def view_evaluation(request, instance_id):
+    instance = get_object_or_404(Instance, id=instance_id)
+    results = Result.objects.filter(instance=instance)
+    paginator = Paginator(results, 3)
+    page = request.GET.get('page')
+    try:
+        results_page = paginator.page(page)
+    except PageNotAnInteger:
+        results_page = paginator.page(1)
+    except EmptyPage:
+        results_page = paginator.page(paginator.num_pages)
+
+    return render(request,'view_evaluation.html', {'instance': instance, 'results': results_page, 'form': DocumentForm})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@permission_required('auth.auditor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(auditor_view_evaluation_instance)
+def document_auditor_create(request, instance_id):
+    instance = get_object_or_404(Instance, id=instance_id)
+
+    if request.method == 'POST':
+        form = DocumentForm(request.POST, request.FILES)
+        if form.is_valid():
+            doc = form.save(commit=False)
+            doc.item = None
+            doc.instance = instance
+            doc.save()
+
+            response = {}
+            response['id'] = doc.id
+            response['filename'] = doc.filename
+            return JsonResponse(response)
+        else:
+            return JsonResponse(form.errors)
     else:
         return JsonResponse({"sorry": "bad method"})

@@ -68,7 +68,7 @@ function success_doc(json) {
         $('#document-form')[0].reset(); // remove the value from the form
         $("#myModalForm").modal('hide');
         $("#file_empty_text").remove();
-        $('#documents').append("<div class='glyphicon glyphicon-book col-lg-12 text-center'>"+json.filename+"&nbsp; <a href='/audits/document/delete/"+json.id+"'>x</a></div>");
+        $('#documents').append("<div class='glyphicon glyphicon-book col-lg-12 text-center'>"+json.filename+"&nbsp; <a href='/audits/document/gestor/delete/"+json.id+"'>x</a></div>");
         if(Cookies.get('django_language') == 'es'){
                   alert('Su documento ha sido creado correctamente.');
               }else{
@@ -130,6 +130,35 @@ function success_item_evaluate(json){
         }
 }
 
+function success_doc_auditor(json) {
+    $("*#document_errors").remove();
+    if(!json.id){
+        $('#document-form-instance').find(':input').each(function(){
+            id = $(this).prop("id");
+            name = id.substring(3,id.length);
+            errors = json[name];
+            if(errors){
+                error = errors.join();
+                $("<div class='clearfix'></div><div class='alert alert-danger' id='document_errors'><strong>"+error+"</strong></div>").insertAfter($(this).parent());
+            }
+        });
+    }else{
+        $('#document-form-instance')[0].reset(); // remove the value from the form
+        $("#myModalForm").modal('hide');
+        $("#file_empty_text").remove();
+        if($('#document-table tr:last').children().length < 4){
+    		$('#document-table tr:last').append("<td><div class='glyphicon glyphicon-book'>"+json.filename+"&nbsp; <a href='/audits/document/gestor/delete/"+json.id+"'>x</a></div></td>");
+        }else{
+    		$('#document-table tr:last').after("<tr><td><div class='glyphicon glyphicon-book'>"+json.filename+"&nbsp; <a href='/audits/document/gestor/delete/"+json.id+"'>x</a></div></td></tr>");
+    }
+        if(Cookies.get('django_language') == 'es'){
+                  alert('Su documento ha sido creado correctamente.');
+              }else{
+                   alert('Your document has been created succesfully.');
+              }
+        }
+}
+
 function error_answer(xhr,errmsg,err) {
      console.log(xhr.status + ": " + xhr.responseText); // provide a bit more info about the error to the console
 }
@@ -142,7 +171,12 @@ function load_js(id){
     $('#document-form').on('submit', function(event){
         event.preventDefault();
         data = new FormData($('form')[0]);
-        do_ajax('/audits/document/create/'+id, data, success_doc, error_answer, true);
+        do_ajax('/audits/document/gestor/create/'+id, data, success_doc, error_answer, true);
+    });
+    $('#document-form-instance').on('submit', function(event){
+        event.preventDefault();
+        data = new FormData($('form')[0]);
+        do_ajax('/audits/document/auditor/create/'+id, data, success_doc_auditor, error_answer, true);
     });
     $('#delete-audit').on('click', function(event){
         event.preventDefault();
