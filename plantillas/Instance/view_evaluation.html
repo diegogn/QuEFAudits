@@ -1,13 +1,39 @@
 {% extends "index.html" %}
 {% load i18n %}
+{% load l10n %}
+{% load mathfilters %}
 {% block scripts %}
     $(document).ready(function(){
         load_js({{ instance.id }});
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Tags', 'Puntuation'],
+        {% for tag, info in dicc.items%}
+            ['{{ tag.name }}',{{ info|last|unlocalize}}],
+        {% endfor %}
+        ]);
+
+        var options = {
+          title: 'Audit Evaluation',
+          legend: { position: 'bottom' },
+          vAxis: {maxValue:100},
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('graph'));
+
+        chart.draw(data, options);
+      }
     });
 {% endblock %}
-{% block script_import %}<script type="application/javascript" src="/static/js/ajax_csrf.js"></script>{% endblock %}
+{% block script_import %}<script type="application/javascript" src="/static/js/ajax_csrf.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+{% endblock %}
 {% block contenido %}
     <div class="page-header"><h1>{%  trans "Stadistics" %}</h1></div>
+    <div class='col-lg-6 auto'id="graph"></div>
     <fieldset class="scheduler-border col-lg-6">
     <legend class="scheduler-border">{% trans "Responses" %}</legend>
         {% for result in results %}
@@ -39,6 +65,8 @@
         </div>
     {% endif %}
     </fieldset>
+    <h4>{% trans 'The final puntuation is:' %} {{ res|floatformat:2 }}
+    </h4>
     <div class="clearfix"></div>
     <h3>{% trans 'Attached Files' %}
         <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#myModalForm">

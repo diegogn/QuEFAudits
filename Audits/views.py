@@ -8,7 +8,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 from QuEFAudits import settings
 import time
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Max, Sum
 from django.db import transaction
 from exceptions import *
 from django.core.exceptions import *
@@ -729,7 +729,40 @@ def view_evaluation(request, instance_id):
     except EmptyPage:
         results_page = paginator.page(paginator.num_pages)
 
-    return render(request,'view_evaluation.html', {'instance': instance, 'results': results_page, 'form': DocumentForm})
+    '''Tenemos que calcular la puntuación máxima de la etiqueta y la que se ha obtenido para realizar la conversión
+       y calcular luego la puntuación de la auditoría.
+    '''
+    dicc={}
+    instancemax=0
+    instancepunt=0
+    for tag in instance.tags.all():
+        maxp, puntuation = puntuacion(tag, instance)
+        instancemax += tag.weight*maxp
+        instancepunt += tag.weight*puntuation
+        dicc[tag] = [maxp,puntuation,puntuation*100/maxp]
+
+    return render(request,'view_evaluation.html', {'instance': instance, 'results': results_page, 'form': DocumentForm,
+                                                   'dicc': dicc,'res': instancepunt*100/instancemax})
+
+
+def puntuacion(tag, instance):
+    maxp = 0
+    puntuation = 0
+    maux = Result.objects.filter(instance=instance).filter(item__tag=tag).annotate(max=Max('item__answer__value')).\
+        aggregate(Sum('max'))['max__sum']
+    if maux:
+        maxp += maux
+    auxpuntuation = Result.objects.filter(instance=instance).filter(item__tag=tag).\
+        aggregate(puntuation=Sum('answer__value'))['puntuation']
+    if auxpuntuation:
+        puntuation += auxpuntuation
+    children = tag.children.all()
+    if children.count > 0:
+        for child in children:
+            cmax, cpunt = puntuacion(child, instance)
+            maxp += cmax
+            puntuation += cpunt
+    return maxp, puntuation
 
 
 @login_required(login_url=settings.LOGIN_URL)
