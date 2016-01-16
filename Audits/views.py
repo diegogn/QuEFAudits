@@ -1,4 +1,4 @@
-# -*- encoding: utf8 -*-
+# -*- encoding: utf-8 -*-
 from django.shortcuts import HttpResponseRedirect, render, get_list_or_404, get_object_or_404, HttpResponse
 from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm, TagEditForm, InstanceForm
 from models import *
@@ -412,7 +412,7 @@ def edit_tag(request, tag_id):
     else:
         form = TagEditForm(instance=tag)
 
-    return render(request, "form.html", {"form": form, 'back_url': '/audits/list/gestor/tags_tree'})
+    return render(request, "edit_tag.html", {"form": form, 'back_url': '/audits/list/gestor/tags_tree'})
 
 
 @login_required(login_url=settings.LOGIN_URL)

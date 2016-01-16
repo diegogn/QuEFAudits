@@ -25,5 +25,5 @@ urlpatterns = [
     url(r'^$', Audits.views.index, name='index'),
     url(r'^login/$', auth_views.login, {'template_name': 'login.html'},
         name='login'),
-    url(r'^logout/$', auth_views.logout, {'template_name': 'index.html'}, name='logout'),
+    url(r'^logout/$', auth_views.logout, {'template_name': 'welcome.html'}, name='logout'),
 ]

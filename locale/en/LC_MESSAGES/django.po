@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
@@ -8,173 +9,574 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-08-27 16:32+0200\n"
+"POT-Creation-Date: 2016-01-16 13:04+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: .\Audits\forms.py:19
-#, fuzzy
-#| msgid "Audits"
-msgid "Admins"
-msgstr "Audits"
+#: .\Audits\forms.py:13
+msgid "No needed"
+msgstr ""
+
+#: .\Audits\forms.py:14
+msgid "One time in week"
+msgstr ""
+
+#: .\Audits\forms.py:15
+msgid "One time in month"
+msgstr ""
+
+#: .\Audits\forms.py:16
+msgid "One time in year"
+msgstr ""
+
+#: .\Audits\forms.py:17
+msgid "Advanced Configuration"
+msgstr ""
 
 #: .\Audits\forms.py:20
+msgid "Execution time"
+msgstr ""
+
+#: .\Audits\forms.py:26
+msgid "DD/MM/YYYY"
+msgstr ""
+
+#: .\Audits\forms.py:35
+msgid "Admins"
+msgstr ""
+
+#: .\Audits\forms.py:36
 msgid "Gestors"
 msgstr ""
 
-#: .\Audits\forms.py:21
-#, fuzzy
-#| msgid "User"
+#: .\Audits\forms.py:37
 msgid "Users"
-msgstr "User"
+msgstr ""
 
-#: .\Audits\forms.py:22
-#, fuzzy
-#| msgid "Auditor"
+#: .\Audits\forms.py:38
 msgid "Auditors"
-msgstr "Auditor"
+msgstr ""
 
-#: .\Audits\forms.py:25 .\Audits\models.py:15 .\Audits\models.py:20
-#: .\Audits\models.py:26 .\Audits\models.py:32 .\Audits\models.py:37
-#: .\Audits\models.py:50 .\Audits\models.py:79 .\Audits\models.py:87
+#: .\Audits\forms.py:41 .\Audits\models.py:16 .\Audits\models.py:22
+#: .\Audits\models.py:28 .\Audits\models.py:34 .\Audits\models.py:39
+#: .\Audits\models.py:69 .\Audits\models.py:136 .\Audits\models.py:147
+#: .\plantillas\Audit\audit_details.html:24
+#: .\plantillas\Instance\evaluate_instance.html:26
+#: .\plantillas\Item\item_details.html:28
 msgid "Name"
-msgstr "Name"
+msgstr ""
 
-#: .\Audits\forms.py:26 .\Audits\models.py:16 .\Audits\models.py:21
-#: .\Audits\models.py:27 .\Audits\models.py:33
+#: .\Audits\forms.py:42 .\Audits\models.py:17 .\Audits\models.py:23
+#: .\Audits\models.py:29 .\Audits\models.py:35
 msgid "Surname"
 msgstr ""
 
-#: .\Audits\forms.py:27
+#: .\Audits\forms.py:43
 msgid "Email"
 msgstr ""
 
-#: .\Audits\forms.py:28
+#: .\Audits\forms.py:44
 msgid "Rol"
 msgstr ""
 
-#: .\Audits\models.py:9 .\Audits\models.py:58
+#: .\Audits\models.py:10 .\Audits\models.py:78
 msgid "User"
-msgstr "User"
+msgstr ""
 
-#: .\Audits\models.py:39
+#: .\Audits\models.py:40
+msgid "Weight"
+msgstr ""
+
+#: .\Audits\models.py:41
+msgid "Public"
+msgstr ""
+
+#: .\Audits\models.py:43
+msgid "Creator"
+msgstr ""
+
+#: .\Audits\models.py:44 .\plantillas\Tag\list_tags.html:24
+#: .\plantillas\Tag\list_tags.html.py:26
 msgid "Father Tag"
-msgstr "Father Tag"
+msgstr ""
 
-#: .\Audits\models.py:51
-msgid "CreationDate"
-msgstr "CreationDate"
+#: .\Audits\models.py:56
+msgid "Dayly"
+msgstr ""
 
-#: .\Audits\models.py:52
-msgid "StartDate"
-msgstr "StartDate"
+#: .\Audits\models.py:57
+msgid "Weakly"
+msgstr ""
 
-#: .\Audits\models.py:54
-msgid "Regularity"
-msgstr "Regularity"
-
-#: .\Audits\models.py:55
-msgid "Period"
-msgstr "Period"
+#: .\Audits\models.py:58
+msgid "Monthly"
+msgstr ""
 
 #: .\Audits\models.py:59
-msgid "Auditor"
-msgstr "Auditor"
+msgid "Yearly"
+msgstr ""
 
-#: .\Audits\models.py:60 .\plantillas\index.html:68
-msgid "Tags"
-msgstr "Tags"
+#: .\Audits\models.py:63
+msgid "Inactive"
+msgstr ""
 
 #: .\Audits\models.py:64
-msgid "Date"
-msgstr "Date"
+msgid "Active"
+msgstr ""
 
-#: .\Audits\models.py:67
-msgid "Items"
+#: .\Audits\models.py:65 .\plantillas\Audit\audit_details.html:68
+msgid "Finish"
+msgstr ""
+
+#: .\Audits\models.py:66
+msgid "Eliminated"
+msgstr ""
+
+#: .\Audits\models.py:70 .\plantillas\Audit\audit_details.html:25
+msgid "Description"
 msgstr ""
 
 #: .\Audits\models.py:71
-msgid "Filename"
-msgstr "Filename"
+msgid "CreationDate"
+msgstr ""
 
 #: .\Audits\models.py:72
-msgid "File"
-msgstr "File"
+msgid "StartDate"
+msgstr ""
 
-#: .\Audits\models.py:80
-msgid "Question"
-msgstr "Question"
+#: .\Audits\models.py:74 .\Audits\models.py:110
+#: .\plantillas\Audit\audit_details.html:35
+#: .\plantillas\Audit\audit_details.html:53
+#: .\plantillas\Audit\list_audits.html:15
+msgid "State"
+msgstr ""
 
-#: .\Audits\models.py:81
-msgid "URL"
-msgstr "URL"
+#: .\Audits\models.py:79 .\plantillas\Audit\list_audits.html:13
+msgid "Auditor"
+msgstr ""
+
+#: .\Audits\models.py:80 .\Audits\models.py:115
+#: .\plantillas\Audit\audit_details.html:28 .\plantillas\index.html:66
+#: .\plantillas\index.html.py:80
+msgid "Tags"
+msgstr ""
 
 #: .\Audits\models.py:83
-msgid "Tag"
-msgstr "Tag"
+msgid "Period"
+msgstr "Period"
+
+#: .\Audits\models.py:84
+msgid "Regularity"
+msgstr "Regularity"
+
+#: .\Audits\models.py:85
+msgid "Count"
+msgstr ""
+
+#: .\Audits\models.py:86
+msgid "Byday"
+msgstr ""
+
+#: .\Audits\models.py:87
+msgid "Bymonth"
+msgstr ""
 
 #: .\Audits\models.py:88
+msgid "Bymonthday"
+msgstr ""
+
+#: .\Audits\models.py:89
+msgid "Wkst"
+msgstr ""
+
+#: .\Audits\models.py:90
+msgid "Byyearday"
+msgstr ""
+
+#: .\Audits\models.py:91
+msgid "Bysetpos"
+msgstr ""
+
+#: .\Audits\models.py:99
+msgid "Started"
+msgstr ""
+
+#: .\Audits\models.py:100
+msgid "Finished"
+msgstr ""
+
+#: .\Audits\models.py:104
+msgid "Low"
+msgstr ""
+
+#: .\Audits\models.py:105
+msgid "Medium"
+msgstr ""
+
+#: .\Audits\models.py:106
+msgid "High"
+msgstr ""
+
+#: .\Audits\models.py:109 .\plantillas\Audit\audit_details.html:51
+msgid "Date"
+msgstr ""
+
+#: .\Audits\models.py:111 .\plantillas\Audit\audit_details.html:54
+msgid "Level"
+msgstr ""
+
+#: .\Audits\models.py:114
+msgid "Items"
+msgstr ""
+
+#: .\Audits\models.py:119
+msgid "Filename"
+msgstr ""
+
+#: .\Audits\models.py:120
+msgid "File"
+msgstr ""
+
+#: .\Audits\models.py:137 .\plantillas\Instance\evaluate_instance.html:27
+#: .\plantillas\Item\item_details.html:29 .\plantillas\Item\list_items.html:12
+msgid "Question"
+msgstr ""
+
+#: .\Audits\models.py:138
+msgid "URL"
+msgstr ""
+
+#: .\Audits\models.py:139 .\plantillas\Instance\evaluate_instance.html:28
+#: .\plantillas\Item\list_items.html:14
+msgid "Obligatory"
+msgstr ""
+
+#: .\Audits\models.py:141 .\plantillas\Instance\evaluate_instance.html:16
+#: .\plantillas\Item\item_details.html:30 .\plantillas\Item\list_items.html:15
+msgid "Tag"
+msgstr ""
+
+#: .\Audits\models.py:148
 msgid "Value"
-msgstr "Value"
+msgstr ""
 
-#: .\QuEFAudits\settings.py:77 .\plantillas\index.html:86
+#: .\QuEFAudits\settings.py:81 .\plantillas\index.html:106
 msgid "English"
-msgstr "English"
+msgstr ""
 
-#: .\QuEFAudits\settings.py:78 .\plantillas\index.html:85
+#: .\QuEFAudits\settings.py:82 .\plantillas\index.html:105
 msgid "Spanish"
-msgstr "Spanish"
+msgstr ""
 
-#: .\plantillas\Audit\list_audits.html:3 .\plantillas\index.html:62
-#, fuzzy
-#| msgid "Audits"
+#: .\plantillas\Audit\audit_details.html:11
+#: .\plantillas\Audit\audit_details.html:14
+msgid "Audit's details"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:23
+msgid "Properties"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:26
+msgid "Creation Date"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:27
+msgid "Start Date"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:39
+msgid "Instances"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:41
+msgid "New Instance"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:52
+msgid "Item number"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:55
+msgid "Options"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:67
+msgid "Evaluate"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:70
+msgid "View Evaluation"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:82
+msgid "No Instances"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:113
+msgid "Change state to Active"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:116
+msgid "Change state to Finished"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:119
+msgid "Eliminate"
+msgstr ""
+
+#: .\plantillas\Audit\audit_details.html:122
+#: .\plantillas\Audit\audit_details.html:127
+#: .\plantillas\Audit\audit_details.html:131
+#: .\plantillas\Instance\evaluate_instance.html:22
+#: .\plantillas\Instance\view_evaluation.html:97
+#: .\plantillas\Item\item_details.html:76 .\plantillas\Item\list_items.html:24
+#: .\plantillas\form.html:41
+msgid "Back"
+msgstr ""
+
+#: .\plantillas\Audit\create_audit.html:3
+#: .\plantillas\Audit\list_audits.html:26 .\plantillas\index.html:74
+msgid "Create Audit"
+msgstr ""
+
+#: .\plantillas\Audit\edit_audit.html:3
+msgid "Edit Audit"
+msgstr ""
+
+#: .\plantillas\Audit\list_audits.html:3 .\plantillas\index.html:75
 msgid "List Audits"
-msgstr "Audits"
+msgstr ""
 
 #: .\plantillas\Audit\list_audits.html:6
+msgid "Audit's List"
+msgstr ""
+
+#: .\plantillas\Audit\list_audits.html:14
+msgid "Usuario"
+msgstr ""
+
+#: .\plantillas\Audit\list_audits.html:22 .\plantillas\Tag\list_tags.html:80
 msgid "There are not audits"
 msgstr ""
 
-#: .\plantillas\index.html:6 .\plantillas\index.html.py:57
-msgid "Audits"
-msgstr "Audits"
+#: .\plantillas\Instance\evaluate_instance.html:9
+msgid "Evaluate Instance"
+msgstr ""
 
-#: .\plantillas\index.html:60
-msgid "Create Audit"
-msgstr "Create Audit"
+#: .\plantillas\Instance\evaluate_instance.html:12
+msgid "Audit realization"
+msgstr ""
 
-#: .\plantillas\index.html:71
-#, fuzzy
-#| msgid "Father Tag"
+#: .\plantillas\Instance\evaluate_instance.html:43
+msgid "Answer"
+msgstr ""
+
+#: .\plantillas\Instance\evaluate_instance.html:48
+msgid "Sorry, the tag you are looking for don't have items in this instance"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:13
+msgid "Puntuation"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:20
+msgid "Audit Evaluation"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:35
+msgid "Stadistics"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:38
+msgid "Responses"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:68
+msgid "The final puntuation is:"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:71
+#: .\plantillas\Item\item_details.html:35
+msgid "Attached Files"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:73
+#: .\plantillas\Item\item_details.html:38
+msgid "New File"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:91
+#: .\plantillas\Item\item_details.html:49
+msgid "No Files attached"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:102
+#: .\plantillas\Item\item_details.html:82
+msgid "Create new file"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:114
+#: .\plantillas\Item\item_details.html:94
+#: .\plantillas\Item\item_details.html:119 .\plantillas\form.html:40
+msgid "Create"
+msgstr ""
+
+#: .\plantillas\Instance\view_evaluation.html:118
+#: .\plantillas\Item\item_details.html:98
+#: .\plantillas\Item\item_details.html:123 .\plantillas\Tag\list_tags.html:50
+#: .\plantillas\Tag\list_tags.html.py:74
+msgid "Close"
+msgstr ""
+
+#: .\plantillas\Item\create_item.html:3
+msgid "Creation/Edition Item"
+msgstr ""
+
+#: .\plantillas\Item\item_details.html:11
+#: .\plantillas\Item\item_details.html:14
+msgid "Item's details"
+msgstr ""
+
+#: .\plantillas\Item\item_details.html:27
+msgid "Basic Properties"
+msgstr ""
+
+#: .\plantillas\Item\item_details.html:31 .\plantillas\Item\list_items.html:13
+msgid "Url"
+msgstr ""
+
+#: .\plantillas\Item\item_details.html:54
+msgid "Answers"
+msgstr ""
+
+#: .\plantillas\Item\item_details.html:57
+msgid "New Answer"
+msgstr ""
+
+#: .\plantillas\Item\item_details.html:70
+msgid "No Answers"
+msgstr ""
+
+#: .\plantillas\Item\item_details.html:107
+msgid "Create new Answer"
+msgstr ""
+
+#: .\plantillas\Item\list_items.html:3
+msgid "List Items"
+msgstr ""
+
+#: .\plantillas\Item\list_items.html:6
+msgid "Item's List of tag: "
+msgstr ""
+
+#: .\plantillas\Item\list_items.html:17
+msgid "There are not items"
+msgstr ""
+
+#: .\plantillas\Item\list_items.html:21 .\plantillas\Tag\list_tags.html:36
+msgid "Create Item"
+msgstr ""
+
+#: .\plantillas\Tag\create_tag.html:3 .\plantillas\Tag\list_tags_tree.html:48
+#: .\plantillas\index.html:83
 msgid "Create Tag"
-msgstr "Father Tag"
+msgstr ""
 
-#: .\plantillas\index.html:72
-#, fuzzy
-#| msgid "Tags"
+#: .\plantillas\Tag\edit_tag.html:3
+msgid "Edit Tag"
+msgstr ""
+
+#: .\plantillas\Tag\list_tags.html:6
+msgid "Item created succesfully"
+msgstr ""
+
+#: .\plantillas\Tag\list_tags.html:12 .\plantillas\Tag\list_tags.html.py:13
+#: .\plantillas\index.html:84
 msgid "List Tags"
-msgstr "Tags"
+msgstr ""
 
-#: .\plantillas\index.html:76
+#: .\plantillas\Tag\list_tags.html:26
+msgid "Root Tag"
+msgstr ""
+
+#: .\plantillas\Tag\list_tags.html:31 .\plantillas\Tag\list_tags_tree.html:32
+msgid "View Items"
+msgstr ""
+
+#: .\plantillas\Tag\list_tags.html:42
+msgid "Tag's Items"
+msgstr ""
+
+#: .\plantillas\Tag\list_tags.html:46
+msgid "Details"
+msgstr ""
+
+#: .\plantillas\Tag\list_tags.html:59
+msgid "Create Item for tag"
+msgstr ""
+
+#: .\plantillas\Tag\list_tags_tree.html:4
+#: .\plantillas\Tag\list_tags_tree.html:28
+msgid "Tags Tree"
+msgstr ""
+
+#: .\plantillas\index.html:65 .\plantillas\index.html.py:71
+#: .\plantillas\index.html:93 .\plantillas\index.html.py:96
+msgid "Audits"
+msgstr ""
+
+#: .\plantillas\index.html:85
+msgid "List Tree of Tags"
+msgstr ""
+
+#: .\plantillas\index.html:90
 msgid "Register User"
 msgstr ""
 
-#: .\plantillas\index.html:82
+#: .\plantillas\index.html:102
 msgid "Language"
-msgstr "Language"
+msgstr ""
 
-#: .\plantillas\index.html:90
+#: .\plantillas\index.html:110 .\plantillas\welcome.html:3
+#: .\plantillas\welcome.html.py:7
 msgid "Welcome"
 msgstr ""
 
-#: .\plantillas\index.html:91
+#: .\plantillas\index.html:111
 msgid "Log Out"
 msgstr ""
 
-#: .\plantillas\index.html:93
+#: .\plantillas\index.html:113 .\plantillas\login.html:28
 msgid "Log In"
+msgstr ""
+
+#: .\plantillas\index.html:124
+msgid "Welcome to Audits"
+msgstr ""
+
+#: .\plantillas\item_no_answer.html:3
+msgid "Item Answer Error"
+msgstr ""
+
+#: .\plantillas\item_no_answer.html:6
+msgid ""
+"Sorry but there is not one tag which has items to evaluate. Please check the "
+"items of the audit's tags"
+msgstr ""
+
+#: .\plantillas\not_user_permission.html:3
+msgid "Not Permissions"
+msgstr ""
+
+#: .\plantillas\welcome.html:12
+msgid ""
+"You are in QAuditor, it is a web application in which you can handdle your "
+"internal audits. This application is a easy, comfortable and fast way to "
+"realize your internal audits."
 msgstr ""

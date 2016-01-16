@@ -11,7 +11,7 @@
     <div class="page-header">
         <h1>{% trans "Audit realization" %}</h1></div>
 
-    <form class="form-inline col-lg-3" id="tag-filter" role="form">
+    <form class="form-inline col-lg-6" id="tag-filter" role="form">
          <div class="form-group">
             <label for="search">{% trans 'Tag' %}:</label>
             <input type="input" class="form-control" id="search">
@@ -40,7 +40,7 @@
                         > </td><td class="text-left">&nbsp;{{ answer.name }}</td></tr>
                     {% endfor %}
                         </table></div>
-                    <input type="submit" class="btn btn-default">
+                    <input type="submit" class="btn btn-default" value="{% trans 'Answer' %}">
                 </form>
             </div>
         </div>

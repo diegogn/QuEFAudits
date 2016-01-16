@@ -10,14 +10,14 @@
 
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-          ['Tags', 'Puntuation'],
+          ['Tags', '{% trans 'Puntuation' %}'],
         {% for tag, info in dicc.items%}
             ['{{ tag.name }}',{{ info|last|unlocalize}}],
         {% endfor %}
         ]);
 
         var options = {
-          title: 'Audit Evaluation',
+          title: '{% trans 'Audit Evaluation' %}',
           legend: { position: 'bottom' },
           vAxis: {maxValue:100},
         };
@@ -111,7 +111,7 @@
             </div>
         </div>
               {% endfor %}
-             <input type="submit" value="Crear"/>
+             <input type="submit" value="{% trans 'Create' %}"/>
           </form>
           </div>
           <div class="modal-footer">
