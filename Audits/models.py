@@ -134,7 +134,7 @@ class Item(models.Model):
     )
 
     name = models.CharField(_("Name"), max_length=50)
-    question = models.CharField(_("Question"), max_length=100)
+    question = models.TextField(_("Question"))
     url = models.URLField(_("URL"), max_length=200,blank=True)
     obligatory = models.CharField(_("Obligatory"), max_length=6, choices=obligatory)
     #Relaciones

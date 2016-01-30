@@ -32,12 +32,12 @@
             {% if forloop.last %}</div>{% endif %}
         {% endfor %}
         </div>
-        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "State" %}:</label> <div class="col-lg-6 text-left">{{ audit.state|lower|capfirst }}</div></div>
+        <div class="col-lg-12"><label class="col-lg-6 text-right">{% trans "State" %}:</label> <div class="col-lg-6 text-left">{% trans audit.state %}</div></div>
     </fieldset>
 
     <fieldset class="scheduler-border">
     <legend class="scheduler-border">{% trans "Instances" %}&nbsp;
-        {% if audit.state == 'ACTIVE' and start_instance == 0 and user == audit.usuario or user == audit.auditor %}
+        {% if user == audit.usuario or user == audit.auditor and audit.state == 'ACTIVE' and start_instance == 0 %}
             <a href="{% url 'create_instance' audit.id %}" class="btn btn-primary btn-xs">{% trans "New Instance"%}</a>
         {% endif %}
 
@@ -60,8 +60,8 @@
               <tr>
                 <td>{{ instance.date }}</td>
                 <td>{{ instance.items.count }}</td>
-                <td>{{ instance.state }}</td>
-                <td>{{ instance.level }}</td>
+                <td>{% trans instance.state %}</td>
+                <td>{% trans instance.level %}</td>
                 <td>{% if instance.audit.usuario == user or instance.audit.auditor == user%}
                     {% if instance.state == 'STARTED' %}
                     <a  href="{% url 'evaluate_instance' instance.id %}">{% trans "Evaluate" %}</a>&nbsp;

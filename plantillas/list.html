@@ -6,13 +6,13 @@
     {% block encabezado %}{% endblock %}
     {% for element in element_page%}
 
-        <div class="panel panel-primary col-md-3">
+        <div class="panel panel-primary col-md-4">
           <div class="panel-heading">{% block heading %}{% endblock %}</div>
           <div class="panel-body">
             {% block body %}{% endblock %}
           </div>
         </div>
-        {% if forloop.counter|divisibleby:"4" %}
+        {% if forloop.counter|divisibleby:"3" %}
             <div class="clearfix"></div>
         {% endif %}
         {% empty %}

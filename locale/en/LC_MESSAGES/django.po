@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-16 13:04+0100\n"
+"POT-Creation-Date: 2016-01-19 10:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -122,20 +122,20 @@ msgid "Yearly"
 msgstr ""
 
 #: .\Audits\models.py:63
-msgid "Inactive"
-msgstr ""
+msgid "INACTIVE"
+msgstr "Inactive"
 
 #: .\Audits\models.py:64
-msgid "Active"
-msgstr ""
+msgid "ACTIVE"
+msgstr "Active"
 
 #: .\Audits\models.py:65 .\plantillas\Audit\audit_details.html:68
-msgid "Finish"
-msgstr ""
+msgid "FINISH"
+msgstr "Finish"
 
 #: .\Audits\models.py:66
-msgid "Eliminated"
-msgstr ""
+msgid "ELIMINATED"
+msgstr "Eliminated"
 
 #: .\Audits\models.py:70 .\plantillas\Audit\audit_details.html:25
 msgid "Description"
@@ -203,24 +203,36 @@ msgid "Bysetpos"
 msgstr ""
 
 #: .\Audits\models.py:99
-msgid "Started"
-msgstr ""
+msgid "STARTED"
+msgstr "Started"
 
 #: .\Audits\models.py:100
-msgid "Finished"
-msgstr ""
+msgid "FINISHED"
+msgstr "Finished"
+
+#: .\Audits\models.py:104
+msgid "LOW"
+msgstr "Low"
 
 #: .\Audits\models.py:104
 msgid "Low"
-msgstr ""
+msgstr "Low"
+
+#: .\Audits\models.py:105
+msgid "MEDIUM"
+msgstr "Medium"
 
 #: .\Audits\models.py:105
 msgid "Medium"
-msgstr ""
+msgstr "Medium"
+
+#: .\Audits\models.py:106
+msgid "HIGH"
+msgstr "High"
 
 #: .\Audits\models.py:106
 msgid "High"
-msgstr ""
+msgstr "High"
 
 #: .\Audits\models.py:109 .\plantillas\Audit\audit_details.html:51
 msgid "Date"

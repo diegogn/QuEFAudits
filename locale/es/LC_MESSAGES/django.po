@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-16 13:04+0100\n"
+"POT-Creation-Date: 2016-01-19 10:01+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -123,19 +123,23 @@ msgid "Yearly"
 msgstr "Anualmente"
 
 #: .\Audits\models.py:63
-msgid "Inactive"
+msgid "INACTIVE"
 msgstr "Inactiva"
 
 #: .\Audits\models.py:64
-msgid "Active"
+msgid "ACTIVE"
 msgstr "Activa"
 
 #: .\Audits\models.py:65 .\plantillas\Audit\audit_details.html:68
-msgid "Finish"
+msgid "FINISH"
 msgstr "Finalizada"
 
+#: .\Audits\models.py:65 .\plantillas\Audit\audit_details.html:68
+msgid "Finish"
+msgstr "Finalizar"
+
 #: .\Audits\models.py:66
-msgid "Eliminated"
+msgid "ELIMINATED"
 msgstr "Eliminada"
 
 #: .\Audits\models.py:70 .\plantillas\Audit\audit_details.html:25
@@ -205,20 +209,33 @@ msgid "Bysetpos"
 msgstr "Bysetpos"
 
 #: .\Audits\models.py:99
-msgid "Started"
+#: .\plantillas\Audit\audit_details.html:63
+msgid "STARTED"
 msgstr "Empezada"
 
 #: .\Audits\models.py:100
-msgid "Finished"
+msgid "FINISHED"
 msgstr "Finalizada"
+
+#: .\Audits\models.py:104
+msgid "LOW"
+msgstr "Bajo"
 
 #: .\Audits\models.py:104
 msgid "Low"
 msgstr "Bajo"
 
 #: .\Audits\models.py:105
+msgid "MEDIUM"
+msgstr "Medio"
+
+#: .\Audits\models.py:105
 msgid "Medium"
 msgstr "Medio"
+
+#: .\Audits\models.py:106
+msgid "HIGH"
+msgstr "Alto"
 
 #: .\Audits\models.py:106
 msgid "High"
@@ -589,3 +606,5 @@ msgstr ""
 "Usted está en QAuditor, esta es una aplicación web en la cual usted puede "
 "manegar sus auditorías internas Esta aplicación es una alternativa fácil, "
 "cómoda y rápida de realizar sus auditorías internas."
+
+
