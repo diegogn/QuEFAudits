@@ -12,7 +12,6 @@
     <li>{% trans "Question" %}: {{ element.question }}</li>
     <li>{% trans "Url" %}: {{ element.url|default:"-"}}</li>
     <li>{% trans "Obligatory" %}: {{ element.obligatory|lower|capfirst|safe }}</li>
-    <li>{% trans "Tag" %}: <span class="label label-primary">{{ element.tag.name }}</span></li>
 {% endblock %}
 {% block no_found %}{% trans "There are not items" %}{% endblock %}
 {% block boton %}
