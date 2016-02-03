@@ -40,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'Audits',
     'mptt',
-    'mathfilters',
 )
 
 MIDDLEWARE_CLASSES = (

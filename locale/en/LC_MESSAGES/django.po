@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-01-16 13:04+0100\n"
+"POT-Creation-Date: 2016-01-30 12:52+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -100,8 +100,8 @@ msgstr ""
 msgid "Creator"
 msgstr ""
 
-#: .\Audits\models.py:44 .\plantillas\Tag\list_tags.html:24
-#: .\plantillas\Tag\list_tags.html.py:26
+#: .\Audits\models.py:44 .\plantillas\Tag\list_tags.html.py:24
+#: .\plantillas\Tag\list_tags.html:26
 msgid "Father Tag"
 msgstr ""
 
@@ -129,7 +129,7 @@ msgstr ""
 msgid "Active"
 msgstr ""
 
-#: .\Audits\models.py:65 .\plantillas\Audit\audit_details.html:68
+#: .\Audits\models.py:65 .\plantillas\Audit\audit_details.html.py:68
 msgid "Finish"
 msgstr ""
 
@@ -137,7 +137,7 @@ msgstr ""
 msgid "Eliminated"
 msgstr ""
 
-#: .\Audits\models.py:70 .\plantillas\Audit\audit_details.html:25
+#: .\Audits\models.py:70 .\plantillas\Audit\audit_details.html.py:25
 msgid "Description"
 msgstr ""
 
@@ -156,13 +156,13 @@ msgstr ""
 msgid "State"
 msgstr ""
 
-#: .\Audits\models.py:79 .\plantillas\Audit\list_audits.html:13
+#: .\Audits\models.py:79 .\plantillas\Audit\list_audits.html.py:13
 msgid "Auditor"
 msgstr ""
 
 #: .\Audits\models.py:80 .\Audits\models.py:115
-#: .\plantillas\Audit\audit_details.html:28 .\plantillas\index.html:66
-#: .\plantillas\index.html.py:80
+#: .\plantillas\Audit\audit_details.html:28 .\plantillas\index.html.py:66
+#: .\plantillas\index.html:80
 msgid "Tags"
 msgstr ""
 
@@ -222,11 +222,11 @@ msgstr ""
 msgid "High"
 msgstr ""
 
-#: .\Audits\models.py:109 .\plantillas\Audit\audit_details.html:51
+#: .\Audits\models.py:109 .\plantillas\Audit\audit_details.html.py:51
 msgid "Date"
 msgstr ""
 
-#: .\Audits\models.py:111 .\plantillas\Audit\audit_details.html:54
+#: .\Audits\models.py:111 .\plantillas\Audit\audit_details.html.py:54
 msgid "Level"
 msgstr ""
 
@@ -242,7 +242,7 @@ msgstr ""
 msgid "File"
 msgstr ""
 
-#: .\Audits\models.py:137 .\plantillas\Instance\evaluate_instance.html:27
+#: .\Audits\models.py:137 .\plantillas\Instance\evaluate_instance.html.py:27
 #: .\plantillas\Item\item_details.html:29 .\plantillas\Item\list_items.html:12
 msgid "Question"
 msgstr ""
@@ -251,12 +251,12 @@ msgstr ""
 msgid "URL"
 msgstr ""
 
-#: .\Audits\models.py:139 .\plantillas\Instance\evaluate_instance.html:28
+#: .\Audits\models.py:139 .\plantillas\Instance\evaluate_instance.html.py:28
 #: .\plantillas\Item\list_items.html:14
 msgid "Obligatory"
 msgstr ""
 
-#: .\Audits\models.py:141 .\plantillas\Instance\evaluate_instance.html:16
+#: .\Audits\models.py:141 .\plantillas\Instance\evaluate_instance.html.py:16
 #: .\plantillas\Item\item_details.html:30 .\plantillas\Item\list_items.html:15
 msgid "Tag"
 msgstr ""
@@ -265,11 +265,11 @@ msgstr ""
 msgid "Value"
 msgstr ""
 
-#: .\QuEFAudits\settings.py:81 .\plantillas\index.html:106
+#: .\QuEFAudits\settings.py:80 .\plantillas\index.html.py:106
 msgid "English"
 msgstr ""
 
-#: .\QuEFAudits\settings.py:82 .\plantillas\index.html:105
+#: .\QuEFAudits\settings.py:81 .\plantillas\index.html.py:105
 msgid "Spanish"
 msgstr ""
 
@@ -334,14 +334,14 @@ msgstr ""
 #: .\plantillas\Audit\audit_details.html:127
 #: .\plantillas\Audit\audit_details.html:131
 #: .\plantillas\Instance\evaluate_instance.html:22
-#: .\plantillas\Instance\view_evaluation.html:97
+#: .\plantillas\Instance\view_evaluation.html:96
 #: .\plantillas\Item\item_details.html:76 .\plantillas\Item\list_items.html:24
-#: .\plantillas\form.html:41
+#: .\plantillas\form.html.py:41
 msgid "Back"
 msgstr ""
 
 #: .\plantillas\Audit\create_audit.html:3
-#: .\plantillas\Audit\list_audits.html:26 .\plantillas\index.html:74
+#: .\plantillas\Audit\list_audits.html:26 .\plantillas\index.html.py:74
 msgid "Create Audit"
 msgstr ""
 
@@ -349,7 +349,7 @@ msgstr ""
 msgid "Edit Audit"
 msgstr ""
 
-#: .\plantillas\Audit\list_audits.html:3 .\plantillas\index.html:75
+#: .\plantillas\Audit\list_audits.html:3 .\plantillas\index.html.py:75
 msgid "List Audits"
 msgstr ""
 
@@ -381,53 +381,53 @@ msgstr ""
 msgid "Sorry, the tag you are looking for don't have items in this instance"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:13
+#: .\plantillas\Instance\view_evaluation.html:12
 msgid "Puntuation"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:20
+#: .\plantillas\Instance\view_evaluation.html:19
 msgid "Audit Evaluation"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:35
+#: .\plantillas\Instance\view_evaluation.html:34
 msgid "Stadistics"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:38
+#: .\plantillas\Instance\view_evaluation.html:37
 msgid "Responses"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:68
+#: .\plantillas\Instance\view_evaluation.html:67
 msgid "The final puntuation is:"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:71
+#: .\plantillas\Instance\view_evaluation.html:70
 #: .\plantillas\Item\item_details.html:35
 msgid "Attached Files"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:73
+#: .\plantillas\Instance\view_evaluation.html:72
 #: .\plantillas\Item\item_details.html:38
 msgid "New File"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:91
+#: .\plantillas\Instance\view_evaluation.html:90
 #: .\plantillas\Item\item_details.html:49
 msgid "No Files attached"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:102
+#: .\plantillas\Instance\view_evaluation.html:101
 #: .\plantillas\Item\item_details.html:82
 msgid "Create new file"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:114
+#: .\plantillas\Instance\view_evaluation.html:113
 #: .\plantillas\Item\item_details.html:94
-#: .\plantillas\Item\item_details.html:119 .\plantillas\form.html:40
+#: .\plantillas\Item\item_details.html:119 .\plantillas\form.html.py:40
 msgid "Create"
 msgstr ""
 
-#: .\plantillas\Instance\view_evaluation.html:118
+#: .\plantillas\Instance\view_evaluation.html:117
 #: .\plantillas\Item\item_details.html:98
 #: .\plantillas\Item\item_details.html:123 .\plantillas\Tag\list_tags.html:50
 #: .\plantillas\Tag\list_tags.html.py:74
@@ -484,7 +484,7 @@ msgid "Create Item"
 msgstr ""
 
 #: .\plantillas\Tag\create_tag.html:3 .\plantillas\Tag\list_tags_tree.html:48
-#: .\plantillas\index.html:83
+#: .\plantillas\index.html.py:83
 msgid "Create Tag"
 msgstr ""
 
@@ -543,8 +543,8 @@ msgstr ""
 msgid "Language"
 msgstr ""
 
-#: .\plantillas\index.html:110 .\plantillas\welcome.html:3
-#: .\plantillas\welcome.html.py:7
+#: .\plantillas\index.html:110 .\plantillas\welcome.html.py:3
+#: .\plantillas\welcome.html:7
 msgid "Welcome"
 msgstr ""
 
@@ -552,7 +552,7 @@ msgstr ""
 msgid "Log Out"
 msgstr ""
 
-#: .\plantillas\index.html:113 .\plantillas\login.html:28
+#: .\plantillas\index.html:113 .\plantillas\login.html.py:28
 msgid "Log In"
 msgstr ""
 

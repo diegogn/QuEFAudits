@@ -87,7 +87,7 @@ function success_audit_delete(json) {
         location.href = '/audits/list/gestor/audits/';
     }else{
         if(Cookies.get('django_language') == 'es'){
-            alert('No se ha podido eliminar la auditoría, su estado no es correcto.');
+            alert('No se ha podido eliminar la auditorï¿½a, su estado no es correcto.');
         }else{
             alert("Audit could not be deleted, its state is not correct.");
         }
@@ -123,11 +123,6 @@ function success_tag_delete(json) {
 }
 
 function success_item_evaluate(json){
-        if (Cookies.get('django_language') == 'es') {
-            alert('Respuesta guardada correctamente.');
-        } else {
-            alert('Answer save correctly.');
-        }
 }
 
 function success_doc_auditor(json) {
@@ -198,6 +193,21 @@ function load_js(id){
     $("#tag-filter").on('submit',function(e){
         e.preventDefault();
         location.href ='/audits/evaluate/instance/'+id+'?q='+$('#search').val();
+    })
+
+    $("#evaluate-button").on('click', function(e){
+        e.preventDefault();
+        forms = document.forms;
+        for (i=1; i<forms.length; i++){
+            data = {answer: $("input:radio:checked", forms[i]).val(), result: $(forms[i]).prop('name')};
+            do_ajax('/audits/evaluate/item/', data, success_item_evaluate, error_answer, false);
+        }
+
+        if(Cookies.get('django_language') == 'es'){
+            alert('Â¡Sus respuestas han sido guardadas!');
+        }else{
+            alert('Your answers have been saved!');
+        }
     })
 }
 

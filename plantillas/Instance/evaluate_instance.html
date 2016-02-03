@@ -21,6 +21,9 @@
     <div class="text-right"><a href="{% url 'audit_details' instance.audit.id%}" class="btn btn-default" role="button">
         {% trans 'Back' %}</a></div>
     <div class="clearfix"></div>
+    <div class="text-right"><button class="btn btn-default" id="evaluate-button">{% trans "Save evaluation" %}</button>
+    </div>
+    <br>
     {% for result in results %}
         <div class="panel panel-default">
             <div class="panel-heading text-center"><b>{% trans 'Name' %}: </b>{{ result.item.name }}
@@ -40,11 +43,12 @@
                         > </td><td class="text-left">&nbsp;{{ answer.name }}</td></tr>
                     {% endfor %}
                         </table></div>
-                    <input type="submit" class="btn btn-default" value="{% trans 'Answer' %}">
                 </form>
             </div>
         </div>
         {% empty %}
             <div class="text-center"><p>{% trans "Sorry, the tag you are looking for don't have items in this instance" %}</p></div>
     {% endfor %}
+    <br>
+    <div class="text-center"><button class="btn btn-default" id="evaluate-button">{% trans "Save evaluation" %}</button></div>
 {% endblock %}

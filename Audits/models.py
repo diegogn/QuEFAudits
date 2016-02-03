@@ -10,31 +10,6 @@ class CredentialsModel(models.Model):
     user = models.OneToOneField(User, primary_key=True, verbose_name=_("User"))
     credential = CredentialsField()
 
-
-class Administrator(models.Model):
-    email = models.EmailField(default="a@f.esa")
-    name = models.CharField(max_length="50", verbose_name=_("Name"))
-    surname = models.CharField(max_length="50", verbose_name=_("Surname"))
-
-
-class Gestor(models.Model):
-    email = models.EmailField(default="a@f.esa")
-    name = models.CharField(max_length="50", verbose_name=_("Name"))
-    surname = models.CharField(max_length="50", verbose_name=_("Surname"))
-
-
-class Usuario(models.Model):
-    email = models.EmailField(default="a@f.esa")
-    name = models.CharField(max_length="50", verbose_name=_("Name"))
-    surname = models.CharField(max_length="50", verbose_name=_("Surname"))
-
-
-class Auditor(models.Model):
-    email = models.EmailField(default="a@f.esa")
-    name = models.CharField(max_length="50", verbose_name=_("Name"))
-    surname = models.CharField(max_length="50", verbose_name=_("Surname"))
-
-
 class Tag(MPTTModel):
     name = models.CharField(_("Name"), max_length=50)
     weight = models.DecimalField(_("Weight"), max_digits=3, decimal_places=2)
