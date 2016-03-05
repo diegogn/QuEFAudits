@@ -27,5 +27,14 @@
 <br>
 <input type="submit" value="{% trans 'Log In'%}" />
 </form>
+<br>
+    <div class="row-fluid">
+    <div class="">
+        {% trans "Log in with:" %}
+        <a href="{% url 'social:begin' 'google-oauth2' %}">
+            <img class="" src="/static/images/signingoogle.png"/>
+        </a>
+    </div>
+</div>
 
 {% endblock %}

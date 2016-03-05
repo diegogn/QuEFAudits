@@ -28,6 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+GOOGLE_OAUTH_EXTRA_SCOPE = ['https://www.googleapis.com/auth/calendar']
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "282215724075-ecive6htfk6alllkre0sdphqrd77psgr"
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "RYEzsH64UybfUrNseDiYsYKa"
 
