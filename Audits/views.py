@@ -1,9 +1,11 @@
 # -*- encoding: utf-8 -*-
 from django.shortcuts import HttpResponseRedirect, render, get_list_or_404, get_object_or_404, HttpResponse
-from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm, TagEditForm, InstanceForm
+from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm, TagEditForm, \
+    InstanceForm, UserPermsForm
 from models import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object, permission_required_or
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object, \
+    permission_required_or, user_passes_test
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.http import JsonResponse
 from QuEFAudits import settings
@@ -12,8 +14,10 @@ from django.db.models import Q, Count, Max, Sum
 from django.db import transaction
 from exceptions import *
 from django.core.exceptions import *
+from django.contrib.auth.models import Permission
 
 level = {'LOW': ['SHALL'], 'MEDIUM': ['SHALL', 'SHOULD'], 'HIGH': ['SHALL', 'SHOULD', 'MAY']}
+
 
 #User passes test functions.
 def audit_owner(user, kwargs):
@@ -21,6 +25,7 @@ def audit_owner(user, kwargs):
     audit = get_object_or_404(Audit, id=audit_id)
 
     return audit.gestor == user
+
 
 def user_audit_details(user, kwargs):
     audit_id = kwargs.itervalues().next()
@@ -34,6 +39,7 @@ def user_audit_details(user, kwargs):
         return audit.auditor == user and audit.state != 'INACTIVE' and audit.state != 'ELIMINATED'
 
     return False
+
 
 def user_audit_create_instance(user, kwargs):
     audit_id = kwargs.itervalues().next()
@@ -86,6 +92,9 @@ def is_tag_creator(user, kwargs):
 
     return tag.create_user == user
 
+
+def has_no_perms(user):
+    return not (user.has_perm('auth.user') or user.has_perm('auth.auditor') or user.has_perm('auth.gestor'))
 
 # Create your views here.
 def not_user_permission(request):
@@ -165,8 +174,7 @@ def delete_audit(request, audit_id):
     else:
         return JsonResponse({"sorry": "bad method"})
 
-@login_required(login_url=settings.LOGIN_URL)
-@permission_required('auth.admin', login_url=settings.LOGIN_URL)
+
 def create_user(request):
     if request.method == 'POST':
         form = UserForm(request.POST)
@@ -175,7 +183,7 @@ def create_user(request):
             return HttpResponseRedirect('/login/')
     else:
         form = UserForm
-    return render(request, 'form.html', {'form': form})
+    return render(request, 'form_signup.html', {'form': form, 'back_url': '/'})
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -787,3 +795,31 @@ def document_auditor_create(request, instance_id):
             return JsonResponse(form.errors)
     else:
         return JsonResponse({"sorry": "bad method"})
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@user_passes_test(has_no_perms)
+def user_perms(request):
+    user = request.user
+
+    if request.method == 'POST':
+        form = UserPermsForm(request.POST)
+
+        if form.is_valid():
+            rol = form.cleaned_data['rol']
+
+            if rol == '1':
+                permission = Permission.objects.get(codename='gestor')
+
+            elif rol == '2':
+                permission = Permission.objects.get(codename='user')
+
+            elif rol == '3':
+                permission = Permission.objects.get(codename='auditor')
+
+            user.user_permissions.add(permission)
+            return HttpResponseRedirect('/')
+    else:
+        form = UserPermsForm
+
+        return render(request,'form.html',{'form': form, 'back_url': '/'})

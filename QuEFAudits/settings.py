@@ -28,8 +28,13 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = "282215724075-ecive6htfk6alllkre0sdphqrd77psgr"
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "RYEzsH64UybfUrNseDiYsYKa"
 
 # Application definition
+AUTHENTICATION_BACKENDS = (
+    'social.backends.google.GoogleOAuth2',
+    'django.contrib.auth.backends.ModelBackend')
 
 INSTALLED_APPS = (
     'django.contrib.admin',
@@ -40,6 +45,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'Audits',
     'mptt',
+    'social.apps.django_app.default',
 )
 
 MIDDLEWARE_CLASSES = (

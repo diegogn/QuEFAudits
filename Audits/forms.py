@@ -32,10 +32,9 @@ class AuditForm(forms.ModelForm):
 
 class UserForm(UserCreationForm):
     rol = (
-        (1, _('Admins')),
-        (2, _('Gestors')),
-        (3, _('Users')),
-        (4, _('Auditors')),
+        (1, _('Gestors')),
+        (2, _('Users')),
+        (3, _('Auditors')),
     )
 
     name = forms.CharField(label=_('Name'))
@@ -55,12 +54,10 @@ class UserForm(UserCreationForm):
 
         rol = self.cleaned_data['rol']
         if rol == '1':
-            permission = Permission.objects.get(codename='admin')
-        elif rol == '2':
             permission = Permission.objects.get(codename='gestor')
-        elif rol == '3':
+        elif rol == '2':
             permission = Permission.objects.get(codename='user')
-        elif rol == '4':
+        elif rol == '3':
             permission = Permission.objects.get(codename='auditor')
 
         if commit:
@@ -107,3 +104,13 @@ class InstanceForm(forms.ModelForm):
     class Meta:
         model = Instance
         fields = ('level',)
+
+
+class UserPermsForm(forms.Form):
+    rol = (
+        (1, _('Gestors')),
+        (2, _('Users')),
+        (3, _('Auditors')),
+    )
+
+    rol = forms.ChoiceField(label=_('Rol'), choices=rol)

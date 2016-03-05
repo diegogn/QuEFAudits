@@ -64,37 +64,16 @@
                 {% if user and perms.auth.gestor %}
                     <li><a href="{% url 'list_my_audits' %}">{% trans "Audits" %}</a></li>
                     <li><a href="{% url 'list_tags_tree' %}">{% trans "Tags" %}</a></li>
-
-                    <!-- Antiguo menú
-				<li class="dropdown">
-			        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-			          {% trans "Audits" %} <b class="caret"></b>
-			        </a>
-			        <ul class="dropdown-menu">
-			          <li><a href="{% url 'create_audit' %}">{% trans "Create Audit" %}</a></li>
-                        <li><a href="{% url 'list_my_audits' %}">{% trans "List Audits" %}</a></li>
-			        </ul>
-                </li>
-                <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                          {% trans "Tags" %} <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a href="{% url 'create_tag' %}">{% trans "Create Tag" %}</a></li>
-                            <li><a href="{% url 'list_tags' '' %}">{% trans "List Tags" %}</a></li>
-                            <li><a href="{% url 'list_tags_tree' %}">{% trans "List Tree of Tags" %}</a></li>
-                        </ul>
-                </li>-->
                 {% endif %}
-            {% if user and perms.auth.admin%}
-                    <li><a href="{% url 'create_user' %}">{% trans "Register User" %}</a></li>
-            {% endif %}
             {% if user and perms.auth.user %}
                     <li><a href="{% url 'user_audits' %}">{% trans "Audits" %}</a></li>
                 {% endif %}
             {% if user and perms.auth.auditor %}
                     <li><a href="{% url 'auditor_audits' %}">{% trans "Audits" %}</a></li>
                 {% endif %}
+            {% if user.is_authenticated and not perms.auth.auditor and not perms.auth.gestor and not perms.auth.user %}
+                    <li><a href="{% url 'user_perms' %}">{% trans "Choose your role" %}</a></li>
+            {% endif %}
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right">
                 <li class="dropdown">
@@ -110,6 +89,7 @@
                      <p class="navbar-text">{% trans 'Welcome' %} {{user.first_name}}</p>
                      <li><a href="{% url 'logout' %}">{% trans "Log Out" %}</a></li>
 		    	{% else %}
+                     <li><a href="{% url 'create_user' %}">{% trans "Sign up" %}</a></li>
                      <li><a href="{% url 'login' %}">{% trans "Log In" %}</a></li>
                 {% endif %}
 		    </ul>
