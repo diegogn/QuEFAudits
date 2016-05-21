@@ -6,9 +6,23 @@ from mptt.models import MPTTModel, TreeForeignKey
 
 
 # Create your models here.
+class UserInfo(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    has_role = models.BooleanField()
+    has_sync = models.BooleanField()
+
+    def is_ready(self):
+        result = False
+        if self.has_role and self.has_sync:
+            result = True
+
+        return result
+
+
 class CredentialsModel(models.Model):
-    user = models.OneToOneField(User, primary_key=True, verbose_name=_("User"))
+    id = models.ForeignKey(User, primary_key=True, related_name='credential')
     credential = CredentialsField()
+
 
 class Tag(MPTTModel):
     name = models.CharField(_("Name"), max_length=50)
@@ -29,7 +43,7 @@ class Tag(MPTTModel):
 class Audit(models.Model):
     frecuency = (
         ('DAYLY', _('Dayly')),
-        ('WEAKLY', _('Weakly')),
+        ('WEEKLY', _('Weekly')),
         ('MONTHLY', _('Monthly')),
         ('YEARLY', _('Yearly')),
     )
@@ -49,9 +63,9 @@ class Audit(models.Model):
     state = models.CharField(_("State"), max_length=100, choices=state)
 
     #Ahora se definen las relaciones
-    gestor = models.ForeignKey(User, related_name='gestor')
-    usuario = models.ForeignKey(User, null=True, verbose_name=_("User"), related_name='usuario')
-    auditor = models.ForeignKey(User, null=True, verbose_name=_("Auditor"), related_name='auditor')
+    gestor = models.ForeignKey(User, related_name='gaudits')
+    usuario = models.ForeignKey(User, null=True, verbose_name=_("User"), related_name='uaudits')
+    auditor = models.ForeignKey(User, null=True, verbose_name=_("Auditor"), related_name='aaudits')
     tags = models.ManyToManyField('Tag', verbose_name=_("Tags"))
 
     #Atributos de la planificacion de google calendar.

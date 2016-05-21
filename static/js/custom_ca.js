@@ -304,41 +304,17 @@ $(document).ready(function(){
                hide(fields);
            case "1":
                hide(fields);
-               $("#id_freq").val("WEAKLY");
-               $("#id_interval").val("");
-               $("#id_count").val("");
-               $("#id_byday").val("");
-               $("#id_bymonth").val("");
-               $("#id_bymonthday").val("");
-               $("#id_wkst").val("");
-               $("#id_byyearday").val("");
-               $("#id_bysetpos").val("");
+               $("#id_freq").val("WEEKLY");
                break;
 
            case "2":
                hide(fields);
                $("#id_freq").val("MONTHLY");
-               $("#id_interval").val("");
-               $("#id_count").val("");
-               $("#id_byday").val("");
-               $("#id_bymonth").val("");
-               $("#id_bymonthday").val("");
-               $("#id_wkst").val("");
-               $("#id_byyearday").val("");
-               $("#id_bysetpos").val("");
                break;
 
            case "3":
                hide(fields);
                $("#id_freq").val("YEARLY");
-               $("#id_interval").val("");
-               $("#id_count").val("");
-               $("#id_byday").val("");
-               $("#id_bymonth").val("");
-               $("#id_bymonthday").val("");
-               $("#id_wkst").val("");
-               $("#id_byyearday").val("");
-               $("#id_bysetpos").val("");
                break;
 
            case "4":

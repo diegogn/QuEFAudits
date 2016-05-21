@@ -35,4 +35,6 @@ urlpatterns = [
     url(r'^evaluate/item/$', views.evaluate_item, name='evaluate_item'),
     url(r'^view/auditor/evaluation/(?P<instance_id>[0-9]+)$', views.view_evaluation, name='view_evaluation'),
     url(r'^document/auditor/create/(?P<instance_id>[0-9]+)$', views.document_auditor_create, name='document__auditor_create'),
+    url(r'^sync/$', views.user_calendar_sync, name="sync"),
+    url(r'^oauth2callback/$', views.auth_return, name="oauth_callback"),
 ]

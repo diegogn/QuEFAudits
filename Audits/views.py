@@ -1,20 +1,30 @@
 # -*- encoding: utf-8 -*-
-from django.shortcuts import HttpResponseRedirect, render, get_list_or_404, get_object_or_404, HttpResponse
-from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm, TagEditForm, \
-    InstanceForm, UserPermsForm
-from models import *
+import time
+import os
+import datetime
+
+from django.shortcuts import HttpResponseRedirect, render, get_object_or_404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import login_required, permission_required, user_passes_test_object, \
     permission_required_or, user_passes_test
 from django.views.decorators.csrf import ensure_csrf_cookie
-from django.http import JsonResponse
-from QuEFAudits import settings
-import time
+from django.http import JsonResponse, HttpResponseBadRequest
 from django.db.models import Q, Count, Max, Sum
 from django.db import transaction
-from exceptions import *
 from django.core.exceptions import *
 from django.contrib.auth.models import Permission
+from googleapiclient.discovery import build
+from oauth2client.django_orm import Storage
+import httplib2
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client import xsrfutil
+
+from Audits.forms import AuditForm, UserForm, TagForm, ItemCreateForm, DocumentForm, AnswerForm, TagEditForm, \
+    InstanceForm, UserPermsForm
+from models import *
+from QuEFAudits import settings
+from exceptions import *
+from models import CredentialsModel
 
 level = {'LOW': ['SHALL'], 'MEDIUM': ['SHALL', 'SHOULD'], 'HIGH': ['SHALL', 'SHOULD', 'MAY']}
 
@@ -95,6 +105,10 @@ def is_tag_creator(user, kwargs):
 
 def has_no_perms(user):
     return not (user.has_perm('auth.user') or user.has_perm('auth.auditor') or user.has_perm('auth.gestor'))
+
+
+def has_no_credential(user):
+    return user.credential
 
 # Create your views here.
 def not_user_permission(request):
@@ -548,6 +562,7 @@ def audit_change_state(request, audit_id):
 
     if audit.state == 'INACTIVE':
         audit.state = 'ACTIVE'
+        do_calendar(audit)
     elif audit.state == 'ACTIVE':
         audit.state = 'FINISH'
     elif audit.state == 'FINISH':
@@ -556,6 +571,64 @@ def audit_change_state(request, audit_id):
     audit.save()
 
     return HttpResponseRedirect('/audits/audit/details/' + audit_id)
+
+
+def do_calendar(audit):
+    #Creamos el evento a insertar en el calendario
+    recurrence = 'RRULE:'
+
+    if audit.freq is not u'' and audit.freq is not None:
+        recurrence += 'FREQ='+audit.freq
+    if audit.count is not u'' and audit.count is not None:
+        recurrence += ';COUNT='+audit.count
+    if audit.interval is not u'' and audit.interval is not None:
+        recurrence += ';INTERVAL='+audit.interval
+    if audit.byday is not u'' and audit.byday is not None:
+        recurrence += ';BYDAY='+audit.byday
+    if audit.bymonth is not u'' and audit.bymonth is not None:
+        recurrence += ';BYMONTH='+audit.bymonth
+    if audit.bymonthday is not u'' and audit.bymonthday is not None:
+        recurrence += ';BYMONTHDAY='+audit.bymonthday
+    if audit.wkst is not u'' and audit.wkst is not None:
+        recurrence += ';WKST='+audit.wkst
+    if audit.byyearday is not u'' and audit.byyearday is not None:
+        recurrence += ';BYYEARDAY='+audit.byyearday
+    if audit.bysetpos is not u'' and audit.bysetpos is not None:
+        recurrence += ';BYSETPOS='+audit.bysetpos
+
+    date = ''+audit.start_date.isoformat()
+    event = {
+                  'summary': audit.name,
+                  'description': audit.description,
+                  'start': {
+                    'date': date,
+                  },
+                  'end': {
+                    'date': date,
+                  },
+                  'recurrence': [
+                    recurrence
+                  ]
+                }
+
+    print(event)
+
+    #Obtenemos los usuarios a sincronizar.
+    syncs = audit.gestor, audit.auditor, audit.usuario
+
+    for user in syncs:
+        #Obtenemos las credenciales y comprobamos que no son nulas o inválidas.
+        storage = Storage(CredentialsModel, 'id', user, 'credential')
+        credential = storage.get()
+
+        if credential is not None and credential.invalid is not True:
+            #Obtenemos el servicio para realizar la creación del evento.
+            http = httplib2.Http()
+            http = credential.authorize(http)
+            service = build(serviceName='calendar', version='v3', http=http)
+            #Creamos el evente en el calendario principal del usuario
+            event = service.events().insert(calendarId='primary', body=event).execute()
+
 
 
 @login_required(login_url=settings.LOGIN_URL)
@@ -823,3 +896,33 @@ def user_perms(request):
         form = UserPermsForm
 
         return render(request,'form.html',{'form': form, 'back_url': '/'})
+
+
+#Objeto para realizar la comunicación con google
+CLIENT_SECRETS = os.path.join(os.path.dirname(__file__), '..', 'client_secrets.json')
+
+FLOW = flow_from_clientsecrets(
+    CLIENT_SECRETS,
+    scope='https://www.googleapis.com/auth/calendar',
+    redirect_uri='http://localhost:8000/audits/oauth2callback/')
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@user_passes_test(has_no_credential)
+def user_calendar_sync(request):
+    storage = Storage(CredentialsModel, 'id', request.user, 'credential')
+    credential = storage.get()
+    if credential is None or credential.invalid is True:
+        FLOW.params['state'] = xsrfutil.generate_token(settings.SECRET_KEY, request.user)
+        authorize_url = FLOW.step1_get_authorize_url()
+        return HttpResponseRedirect(authorize_url)
+
+
+@login_required
+def auth_return(request):
+    if not xsrfutil.validate_token(settings.SECRET_KEY, str(request.GET.get('state')), request.user):
+        return HttpResponseBadRequest()
+    credential = FLOW.step2_exchange(request.GET.get('code'))
+    storage = Storage(CredentialsModel, 'id', request.user, 'credential')
+    storage.put(credential)
+    return HttpResponseRedirect("/")

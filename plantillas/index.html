@@ -1,4 +1,5 @@
 {% load i18n %}
+{% load filters %}
 <!DOCTYPE html>
 <html lang='es'>
 <head>
@@ -73,6 +74,9 @@
                 {% endif %}
             {% if user.is_authenticated and not perms.auth.auditor and not perms.auth.gestor and not perms.auth.user %}
                     <li><a href="{% url 'user_perms' %}">{% trans "Choose your role" %}</a></li>
+            {% endif %}
+            {% if user.is_authenticated and not user|is_sync %}
+                    <li><a href="{% url 'sync' %}">{% trans "Sync with calendar" %}</a></li>
             {% endif %}
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right">

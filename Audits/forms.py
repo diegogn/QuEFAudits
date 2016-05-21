@@ -1,3 +1,5 @@
+import datetime
+
 __author__ = 'Diego Desarrollo'
 from django import forms
 from Audits.models import Audit, Tag, Item, Document, Answer, Instance
@@ -21,9 +23,16 @@ class AuditForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(AuditForm, self).__init__(*args, **kwargs)
-        self.fields['auditor'].queryset = User.objects.filter(user_permissions__codename__exact='auditor')
-        self.fields['usuario'].queryset = User.objects.filter(user_permissions__codename__exact='user')
+        self.fields['auditor'].queryset = User.objects.filter(Q(user_permissions__codename__exact='auditor'))
+        self.fields['usuario'].queryset = User.objects.filter(Q(user_permissions__codename__exact='user'))
         self.fields['start_date'].widget = forms.DateInput(attrs={'placeholder': _("DD/MM/YYYY")})
+
+    def clean_start_date(self):
+        date = self.cleaned_data['start_date']
+        if date < datetime.date.today():
+            raise forms.ValidationError(_("The date cannot be in past"))
+
+        return date
 
     class Meta:
         model = Audit
@@ -93,6 +102,7 @@ class DocumentForm(forms.ModelForm):
     class Meta:
         model = Document
         exclude = ['item', 'instance']
+
 
 class AnswerForm(forms.ModelForm):
     class Meta:
