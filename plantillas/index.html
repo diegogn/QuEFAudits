@@ -36,6 +36,7 @@
               $('#en').css('background-color','grey');
           }else{
                $('#es').css('background-color','grey');
+               Cookies.set('django_language','es',{path: '/'});
           }
           {% block scripts %}{% endblock %}
       });

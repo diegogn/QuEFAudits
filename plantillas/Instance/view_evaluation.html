@@ -100,7 +100,7 @@
         <div class="modal-content">
           <div class="modal-header">{% trans "Create new file" %}</div>
           <div class="modal-body">
-          <form id='document-form-instance' class="form-horizontal" method="post" action="" enctype="multipart/form-data">
+          <form id='document-form-instance' class="form-horizontal" method="post" action="{% url 'document_auditor_create' instance.id%}" enctype="multipart/form-data">
               {% csrf_token %}
               {% for field in form %}
                 <div class="form-group">

@@ -59,7 +59,6 @@ class Audit(models.Model):
     description = models.TextField(_('Description'), blank=True)
     creation_date = models.DateField(_("CreationDate"))
     start_date = models.DateField(_("StartDate"))
-    eventId = models.IntegerField(null=True)
     state = models.CharField(_("State"), max_length=100, choices=state)
 
     #Ahora se definen las relaciones

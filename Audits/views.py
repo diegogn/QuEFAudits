@@ -29,12 +29,19 @@ from models import CredentialsModel
 level = {'LOW': ['SHALL'], 'MEDIUM': ['SHALL', 'SHOULD'], 'HIGH': ['SHALL', 'SHOULD', 'MAY']}
 
 
-#User passes test functions.
+#User passes tests functions.
 def audit_owner(user, kwargs):
     audit_id = kwargs.itervalues().next()
     audit = get_object_or_404(Audit, id=audit_id)
 
     return audit.gestor == user
+
+
+def audit_user(user, kwargs):
+    audit_id = kwargs.itervalues().next()
+    audit = get_object_or_404(Audit, id=audit_id)
+
+    return user == audit.gestor or user == audit.auditor or user == audit.usuario
 
 
 def user_audit_details(user, kwargs):
@@ -55,14 +62,14 @@ def user_audit_create_instance(user, kwargs):
     audit_id = kwargs.itervalues().next()
     audit = get_object_or_404(Audit, id=audit_id)
 
-    return audit.usuario == user or audit.auditor == user and audit.state != 'INACTIVE'
+    return (audit.usuario == user or audit.auditor == user) and audit.state == 'ACTIVE'
 
 
 def user_auditor_finish_instance(user, kwargs):
     instance_id = kwargs.itervalues().next()
     instance = get_object_or_404(Instance, id=instance_id)
 
-    return instance.audit.usuario == user or instance.audit.auditor == user and instance.state == 'STARTED'
+    return (instance.audit.usuario == user or instance.audit.auditor == user) and instance.state == 'STARTED'
 
 
 def auditor_view_evaluation_instance(user, kwargs):
@@ -77,6 +84,17 @@ def user_item_owner(user, kwargs):
     item = get_object_or_404(Item, id=item_id)
     return item.tag.create_user == user
 
+def user_answer_onwer(user, kwargs):
+    answer_id = kwargs.itervalues().next()
+    answer = get_object_or_404(Answer, id=answer_id)
+
+    return answer.item.tag.create_user == user
+
+def user_document_delete(user, kwargs):
+    document_id = kwargs.itervalues().next()
+    document = Document.objects.get(id=document_id)
+
+    return document.item and document.item.tag.create_user == user
 
 def item_tag_public(user, kwargs):
     item_id = kwargs.itervalues().next()
@@ -123,7 +141,7 @@ def index(request):
 def create_audit(request):
     if request.method == 'POST':
         form = AuditForm(request.POST)
-        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) or Q(public=True))
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) | Q(public=True))
         if form.is_valid():
             audit = form.save(commit=False)
             audit.gestor = request.user
@@ -142,7 +160,7 @@ def create_audit(request):
             return HttpResponseRedirect('/audits/list/gestor/audits/?page=-1')
     else:
         form = AuditForm()
-        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) or Q(public=True))
+        form.fields['tags'].queryset = Tag.objects.filter(Q(public=True) | Q(create_user=request.user))
     return render(request, 'create_audit.html', {'form': form, 'back_url': '/audits/list/gestor/audits/?page=%s' %
                                                                    request.GET.get('page')})
 
@@ -154,7 +172,7 @@ def edit_audit(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
     if request.method == 'POST':
         form = AuditForm(request.POST, instance=audit)
-        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) or Q(public=True))
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) | Q(public=True))
         if form.is_valid():
             audit = form.save(commit=False)
             audit.gestor = request.user
@@ -170,7 +188,7 @@ def edit_audit(request, audit_id):
             return HttpResponseRedirect('/audits/audit/details/%d'% audit.id)
     else:
         form = AuditForm(instance=audit)
-        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) or Q(public=True))
+        form.fields['tags'].queryset = Tag.objects.filter(Q(create_user=request.user) | Q(public=True))
 
     return render(request, 'edit_audit.html', {'form': form, 'back_url': '/audits/audit/details/%s' % audit_id})
 
@@ -361,6 +379,7 @@ def list_tag_items(request, tag_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(item_tag_public)
 @ensure_csrf_cookie
 def item_details(request, item_id):
     item = get_object_or_404(Item, id=item_id)
@@ -375,6 +394,7 @@ def item_details(request, item_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_item_owner)
 def create_document(request, item_id):
     item = get_object_or_404(Item, id=item_id)
 
@@ -398,6 +418,7 @@ def create_document(request, item_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required_or(['auth.gestor', 'auth.auditor'], login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_document_delete)
 def document_delete(request, document_id):
     document = get_object_or_404(Document, id=document_id)
 
@@ -424,6 +445,7 @@ def list_tag_tree(request):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(is_tag_creator)
 def edit_tag(request, tag_id):
     tag = get_object_or_404(Tag, id=tag_id)
     if request.method == 'POST':
@@ -482,6 +504,7 @@ def delete_item(request, item_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_item_owner)
 def create_answer(request, item_id):
     item = get_object_or_404(Item, id=item_id)
 
@@ -506,6 +529,7 @@ def create_answer(request, item_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_answer_onwer)
 def edit_answer(request, answer_id):
     answer = get_object_or_404(Answer, id=answer_id)
 
@@ -523,6 +547,7 @@ def edit_answer(request, answer_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(user_answer_onwer)
 def delete_answer(request, answer_id):
     answer = get_object_or_404(Answer, id=answer_id)
     id = answer.item.id
@@ -557,6 +582,7 @@ def audit_details(request, audit_id):
 
 @login_required(login_url=settings.LOGIN_URL)
 @permission_required('auth.gestor', login_url=settings.LOGIN_URL)
+@user_passes_test_object(audit_owner)
 def audit_change_state(request, audit_id):
     audit = get_object_or_404(Audit, id=audit_id)
 
@@ -574,6 +600,44 @@ def audit_change_state(request, audit_id):
 
 
 def do_calendar(audit):
+
+    event = create_event_json(audit)
+    #Obtenemos los usuarios a sincronizar.
+    syncs = audit.gestor, audit.auditor, audit.usuario
+
+    for user in syncs:
+        #Obtenemos las credenciales y comprobamos que no son nulas o inválidas.
+        storage = Storage(CredentialsModel, 'id', user, 'credential')
+        credential = storage.get()
+
+        if credential is not None and credential.invalid is not True:
+            #Obtenemos el servicio para realizar la creación del evento.
+            http = httplib2.Http()
+            http = credential.authorize(http)
+            service = build(serviceName='calendar', version='v3', http=http)
+            #Creamos el evente en el calendario principal del usuario
+            event = service.events().insert(calendarId='primary', body=event).execute()
+
+
+@login_required(login_url=settings.LOGIN_URL)
+@user_passes_test_object(audit_user)
+def create_event_calendar(request, audit_id):
+
+    audit = get_object_or_404(Audit, audit_id)
+    event = create_event_json(audit)
+
+    storage = Storage(CredentialsModel, 'id', request.user, 'credential')
+    credential = storage.get()
+    if credential is not None and credential.invalid is not True:
+        #Obtenemos el servicio para realizar la creación del evento.
+        http = httplib2.Http()
+        http = credential.authorize(http)
+        service = build(serviceName='calendar', version='v3', http=http)
+        #Creamos el evente en el calendario principal del usuario
+        event = service.events().insert(calendarId='primary', body=event).execute()
+
+
+def create_event_json(audit):
     #Creamos el evento a insertar en el calendario
     recurrence = 'RRULE:'
 
@@ -611,24 +675,7 @@ def do_calendar(audit):
                   ]
                 }
 
-    print(event)
-
-    #Obtenemos los usuarios a sincronizar.
-    syncs = audit.gestor, audit.auditor, audit.usuario
-
-    for user in syncs:
-        #Obtenemos las credenciales y comprobamos que no son nulas o inválidas.
-        storage = Storage(CredentialsModel, 'id', user, 'credential')
-        credential = storage.get()
-
-        if credential is not None and credential.invalid is not True:
-            #Obtenemos el servicio para realizar la creación del evento.
-            http = httplib2.Http()
-            http = credential.authorize(http)
-            service = build(serviceName='calendar', version='v3', http=http)
-            #Creamos el evente en el calendario principal del usuario
-            event = service.events().insert(calendarId='primary', body=event).execute()
-
+    return event
 
 
 @login_required(login_url=settings.LOGIN_URL)

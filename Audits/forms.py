@@ -27,6 +27,7 @@ class AuditForm(forms.ModelForm):
         self.fields['usuario'].queryset = User.objects.filter(Q(user_permissions__codename__exact='user'))
         self.fields['start_date'].widget = forms.DateInput(attrs={'placeholder': _("DD/MM/YYYY")})
 
+
     def clean_start_date(self):
         date = self.cleaned_data['start_date']
         if date < datetime.date.today():

@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-20 16:36+0100\n"
+"POT-Creation-Date: 2016-09-24 13:58+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -19,322 +19,355 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\Audits\forms.py:13
+#: .\Audits\forms.py:15
 msgid "No needed"
 msgstr "No es necesario"
 
-#: .\Audits\forms.py:14
+#: .\Audits\forms.py:16
 msgid "One time in week"
 msgstr "Una vez a la semana"
 
-#: .\Audits\forms.py:15
+#: .\Audits\forms.py:17
 msgid "One time in month"
 msgstr "Una vez al mes"
 
-#: .\Audits\forms.py:16
+#: .\Audits\forms.py:18
 msgid "One time in year"
 msgstr "Una vez al año"
 
-#: .\Audits\forms.py:17
+#: .\Audits\forms.py:19
 msgid "Advanced Configuration"
 msgstr "Configuración avanzada"
 
-#: .\Audits\forms.py:20
+#: .\Audits\forms.py:22
 msgid "Execution time"
 msgstr "Tiempo de ejecución"
 
-#: .\Audits\forms.py:26
+#: .\Audits\forms.py:28
 msgid "DD/MM/YYYY"
 msgstr "DD/MM/YYYY"
 
-#: .\Audits\forms.py:35
+#: .\Audits\forms.py:33
+msgid "The date cannot be in past"
+msgstr "La fecha no puede ser en pasado"
+
+#: .\Audits\forms.py:44 .\Audits\forms.py:121
 msgid "Gestors"
 msgstr "Gestores"
 
-#: .\Audits\forms.py:36
+#: .\Audits\forms.py:45 .\Audits\forms.py:122
 msgid "Users"
 msgstr "Usuarios"
 
-#: .\Audits\forms.py:37
+#: .\Audits\forms.py:46 .\Audits\forms.py:123
 msgid "Auditors"
 msgstr "Auditores"
 
-#: .\Audits\forms.py:40 .\Audits\models.py:14 .\Audits\models.py:44
-#: .\Audits\models.py:111 .\Audits\models.py:122
-#: .\plantillas\Audit\audit_details.html:26
+#: .\Audits\forms.py:49 .\Audits\models.py:28 .\Audits\models.py:58
+#: .\Audits\models.py:125 .\Audits\models.py:136
+#: .\plantillas\Audit\audit_details.html:27
 #: .\plantillas\Instance\evaluate_instance.html:29
 #: .\plantillas\Item\item_details.html:28
 msgid "Name"
 msgstr "Nombre"
 
-#: .\Audits\forms.py:41
+#: .\Audits\forms.py:50
 msgid "Surname"
 msgstr "Apellidos"
 
-#: .\Audits\forms.py:42
+#: .\Audits\forms.py:51
 msgid "Email"
 msgstr "Email"
 
-#: .\Audits\forms.py:43
+#: .\Audits\forms.py:52 .\Audits\forms.py:126
 msgid "Rol"
 msgstr "Rol"
 
-#: .\Audits\models.py:10 .\Audits\models.py:53
-msgid "User"
-msgstr "Usuario"
-
-#: .\Audits\models.py:15
+#: .\Audits\models.py:29
 msgid "Weight"
 msgstr "Ponderación"
 
-#: .\Audits\models.py:16
+#: .\Audits\models.py:30
 msgid "Public"
 msgstr "Público"
 
-#: .\Audits\models.py:18
+#: .\Audits\models.py:32
 msgid "Creator"
 msgstr "Creador"
 
-#: .\Audits\models.py:19 .\plantillas\Tag\list_tags.html.py:24
+#: .\Audits\models.py:33 .\plantillas\Tag\list_tags.html.py:24
 #: .\plantillas\Tag\list_tags.html:26
 msgid "Father Tag"
 msgstr "Etiqueta Padre"
 
-#: .\Audits\models.py:31
+#: .\Audits\models.py:45
 msgid "Dayly"
 msgstr "Diariamente"
 
-#: .\Audits\models.py:32
-msgid "Weakly"
+#: .\Audits\models.py:46
+msgid "Weekly"
 msgstr "Semanalmente"
 
-#: .\Audits\models.py:33
+#: .\Audits\models.py:47
 msgid "Monthly"
 msgstr "Mensualmente"
 
-#: .\Audits\models.py:34
+#: .\Audits\models.py:48
 msgid "Yearly"
 msgstr "Anualmente"
 
-#: .\Audits\models.py:38
+#: .\Audits\models.py:52
 msgid "Inactive"
 msgstr "Inactiva"
 
-#: .\Audits\models.py:39
+#: .\Audits\models.py:53
 msgid "Active"
 msgstr "Activa"
 
-#: .\Audits\models.py:40 .\plantillas\Audit\audit_details.html.py:70
+#: .\Audits\models.py:54 .\plantillas\Audit\audit_details.html.py:74
 msgid "Finish"
 msgstr "Finalizada"
 
-#: .\Audits\models.py:41
+#: .\Audits\models.py:55
 msgid "Eliminated"
 msgstr "Eliminada"
 
-#: .\Audits\models.py:45 .\plantillas\Audit\audit_details.html.py:27
+#: .\Audits\models.py:59 .\plantillas\Audit\audit_details.html.py:28
 msgid "Description"
 msgstr "Descripción"
 
-#: .\Audits\models.py:46
+#: .\Audits\models.py:60
 #, fuzzy
 msgid "CreationDate"
 msgstr "Fecha de Creacion"
 
-#: .\Audits\models.py:47
+#: .\Audits\models.py:61
 msgid "StartDate"
 msgstr "Fecha de Inicio"
 
-#: .\Audits\models.py:49 .\Audits\models.py:85
-#: .\plantillas\Audit\audit_details.html:37
-#: .\plantillas\Audit\audit_details.html:55
+#: .\Audits\models.py:63 .\Audits\models.py:99
+#: .\plantillas\Audit\audit_details.html:38
+#: .\plantillas\Audit\audit_details.html:59
 #: .\plantillas\Audit\list_audits.html:15
 msgid "State"
 msgstr "Estado"
 
-#: .\Audits\models.py:54 .\plantillas\Audit\list_audits.html.py:13
+#: .\Audits\models.py:67
+msgid "User"
+msgstr "Usuario"
+
+#: .\Audits\models.py:68 .\plantillas\Audit\list_audits.html.py:13
 msgid "Auditor"
 msgstr "Auditor"
 
-#: .\Audits\models.py:55 .\Audits\models.py:90
-#: .\plantillas\Audit\audit_details.html:30 .\plantillas\index.html.py:66
+#: .\Audits\models.py:69 .\Audits\models.py:104
+#: .\plantillas\Audit\audit_details.html:31 .\plantillas\index.html.py:67
 msgid "Tags"
 msgstr "Etiquetas"
 
-#: .\Audits\models.py:58
+#: .\Audits\models.py:72
 msgid "Period"
 msgstr "Periodo"
 
-#: .\Audits\models.py:59
+#: .\Audits\models.py:73
 msgid "Regularity"
 msgstr "Regularidad"
 
-#: .\Audits\models.py:60
+#: .\Audits\models.py:74
 msgid "Count"
 msgstr "Count"
 
-#: .\Audits\models.py:61
+#: .\Audits\models.py:75
 msgid "Byday"
 msgstr "Byday"
 
-#: .\Audits\models.py:62
+#: .\Audits\models.py:76
 msgid "Bymonth"
 msgstr "Bymonth"
 
-#: .\Audits\models.py:63
+#: .\Audits\models.py:77
 msgid "Bymonthday"
 msgstr "Bymonthday"
 
-#: .\Audits\models.py:64
+#: .\Audits\models.py:78
 msgid "Wkst"
 msgstr "Wkst"
 
-#: .\Audits\models.py:65
+#: .\Audits\models.py:79
 msgid "Byyearday"
 msgstr "Byyearday"
 
-#: .\Audits\models.py:66
+#: .\Audits\models.py:80
 msgid "Bysetpos"
 msgstr "Bysetpos"
 
-#: .\Audits\models.py:74
+#: .\Audits\models.py:88
 msgid "Started"
 msgstr "Empezada"
 
-#: .\Audits\models.py:75
+#: .\Audits\models.py:89
 msgid "Finished"
 msgstr "Finalizada"
 
-#: .\Audits\models.py:79
+#: .\Audits\models.py:93
 msgid "Low"
 msgstr "Bajo"
 
-#: .\Audits\models.py:80
+#: .\Audits\models.py:94
 msgid "Medium"
 msgstr "Medio"
 
-#: .\Audits\models.py:81
+#: .\Audits\models.py:95
 msgid "High"
 msgstr "Alto"
 
-#: .\Audits\models.py:84 .\plantillas\Audit\audit_details.html.py:53
+#: .\Audits\models.py:98 .\plantillas\Audit\audit_details.html.py:57
 msgid "Date"
 msgstr "Fecha"
 
-#: .\Audits\models.py:86 .\plantillas\Audit\audit_details.html.py:56
+#: .\Audits\models.py:100 .\plantillas\Audit\audit_details.html.py:60
 msgid "Level"
 msgstr "Nivel"
 
-#: .\Audits\models.py:89
+#: .\Audits\models.py:103
 msgid "Items"
 msgstr "Items"
 
-#: .\Audits\models.py:94
+#: .\Audits\models.py:108
 msgid "Filename"
 msgstr "Nombre del Archivo"
 
-#: .\Audits\models.py:95
+#: .\Audits\models.py:109
 msgid "File"
 msgstr "Archivo"
 
-#: .\Audits\models.py:112 .\plantillas\Instance\evaluate_instance.html.py:30
+#: .\Audits\models.py:126 .\plantillas\Instance\evaluate_instance.html.py:30
 #: .\plantillas\Item\item_details.html:29 .\plantillas\Item\list_items.html:12
 msgid "Question"
 msgstr "Pregunta"
 
-#: .\Audits\models.py:113
+#: .\Audits\models.py:127
 msgid "URL"
 msgstr "URL"
 
-#: .\Audits\models.py:114 .\plantillas\Instance\evaluate_instance.html.py:31
+#: .\Audits\models.py:128 .\plantillas\Instance\evaluate_instance.html.py:31
 #: .\plantillas\Item\list_items.html:14
 msgid "Obligatory"
 msgstr "Obligatoriedad"
 
-#: .\Audits\models.py:116 .\plantillas\Instance\evaluate_instance.html.py:16
+#: .\Audits\models.py:130 .\plantillas\Instance\evaluate_instance.html.py:16
 #: .\plantillas\Item\item_details.html:30
 msgid "Tag"
 msgstr "Etiqueta"
 
-#: .\Audits\models.py:123
+#: .\Audits\models.py:137
 msgid "Value"
 msgstr "Valor"
 
-#: .\QuEFAudits\settings.py:80 .\plantillas\index.html.py:82
+#: .\QuEFAudits\settings.py:87 .\plantillas\index.html.py:89
 msgid "English"
 msgstr "Inglés"
 
-#: .\QuEFAudits\settings.py:81 .\plantillas\index.html.py:81
+#: .\QuEFAudits\settings.py:88 .\plantillas\index.html.py:88
 #, fuzzy
 msgid "Spanish"
 msgstr "Español"
 
-#: .\plantillas\Audit\audit_details.html:11
-#: .\plantillas\Audit\audit_details.html:15
+#: .\plantillas\Audit\audit_details.html:12
+#: .\plantillas\Audit\audit_details.html:16
 msgid "Audit's details"
 msgstr "Detalles de auditoría"
 
-#: .\plantillas\Audit\audit_details.html:25
+#: .\plantillas\Audit\audit_details.html:26
 msgid "Properties"
 msgstr "Propiedades"
 
-#: .\plantillas\Audit\audit_details.html:28
+#: .\plantillas\Audit\audit_details.html:29
 msgid "Creation Date"
 msgstr "Fecha de Creacion"
 
-#: .\plantillas\Audit\audit_details.html:29
+#: .\plantillas\Audit\audit_details.html:30
 msgid "Start Date"
 msgstr "Fecha de Inicio"
 
-#: .\plantillas\Audit\audit_details.html:41
+#: .\plantillas\Audit\audit_details.html:40
+msgid "Synchronize with calendar"
+msgstr "Sincronizar con calendar"
+
+#: .\plantillas\Audit\audit_details.html:45
 msgid "Instances"
 msgstr "Instancias"
 
-#: .\plantillas\Audit\audit_details.html:43
+#: .\plantillas\Audit\audit_details.html:47
 msgid "New Instance"
 msgstr "Nueva Instancia"
 
-#: .\plantillas\Audit\audit_details.html:54
+#: .\plantillas\Audit\audit_details.html:58
 msgid "Item number"
 msgstr "Número de items"
 
-#: .\plantillas\Audit\audit_details.html:57
+#: .\plantillas\Audit\audit_details.html:61
 msgid "Options"
 msgstr "Opciones"
 
-#: .\plantillas\Audit\audit_details.html:69
+#: .\plantillas\Audit\audit_details.html:73
 msgid "Evaluate"
 msgstr "Evaluar"
 
-#: .\plantillas\Audit\audit_details.html:72
+#: .\plantillas\Audit\audit_details.html:76
 msgid "View Evaluation"
 msgstr "Ver Evaluación"
 
-#: .\plantillas\Audit\audit_details.html:84
+#: .\plantillas\Audit\audit_details.html:88
 msgid "No Instances"
 msgstr "No hay instancias"
 
-#: .\plantillas\Audit\audit_details.html:115
+#: .\plantillas\Audit\audit_details.html:119
 msgid "Change state to Active"
 msgstr "Cambiar estado a activa"
 
-#: .\plantillas\Audit\audit_details.html:118
+#: .\plantillas\Audit\audit_details.html:122
 msgid "Change state to Finished"
 msgstr "Cambiar estado a finalizada"
 
-#: .\plantillas\Audit\audit_details.html:121
+#: .\plantillas\Audit\audit_details.html:125
 msgid "Eliminate"
 msgstr "Eliminar"
 
-#: .\plantillas\Audit\audit_details.html:124
-#: .\plantillas\Audit\audit_details.html:129
+#: .\plantillas\Audit\audit_details.html:128
 #: .\plantillas\Audit\audit_details.html:133
+#: .\plantillas\Audit\audit_details.html:137
 #: .\plantillas\Instance\evaluate_instance.html:22
 #: .\plantillas\Instance\view_evaluation.html:96
 #: .\plantillas\Item\item_details.html:76 .\plantillas\Item\list_items.html:23
 #: .\plantillas\form.html.py:41
 msgid "Back"
 msgstr "Volver"
+
+#: .\plantillas\Audit\audit_details.html:147
+msgid "Warning!"
+msgstr "¡Aviso!"
+
+#: .\plantillas\Audit\audit_details.html:150
+msgid ""
+"Are you sure?. If you have created this event yet, it will be duplicated in "
+"your calendar"
+msgstr "¿Estas seguro?. Si ya has creado este evento, será duplicado en tu calendario"
+
+#: .\plantillas\Audit\audit_details.html:153
+#: .\plantillas\Instance\view_evaluation.html:113
+#: .\plantillas\Item\item_details.html:94
+#: .\plantillas\Item\item_details.html:119 .\plantillas\form.html.py:40
+msgid "Create"
+msgstr "Crear"
+
+#: .\plantillas\Audit\audit_details.html:154
+#: .\plantillas\Instance\view_evaluation.html:117
+#: .\plantillas\Item\item_details.html:98
+#: .\plantillas\Item\item_details.html:123 .\plantillas\Tag\list_tags.html:50
+#: .\plantillas\Tag\list_tags.html.py:74
+msgid "Close"
+msgstr "Cerrar"
 
 #: .\plantillas\Audit\create_audit.html:3
 #: .\plantillas\Audit\list_audits.html:26
@@ -370,11 +403,8 @@ msgid "Audit realization"
 msgstr "Realizar auditoría"
 
 #: .\plantillas\Instance\evaluate_instance.html:24
-#: .\plantillas\Instance\evaluate_instance.html:53
-#, fuzzy
-#| msgid "View Evaluation"
 msgid "Save evaluation"
-msgstr "Ver Evaluación"
+msgstr "Guardar Evaluación"
 
 #: .\plantillas\Instance\evaluate_instance.html:50
 msgid "Sorry, the tag you are looking for don't have items in this instance"
@@ -420,19 +450,6 @@ msgstr "No hay archivos adjuntos"
 #: .\plantillas\Item\item_details.html:82
 msgid "Create new file"
 msgstr "Crear archivo nuevo"
-
-#: .\plantillas\Instance\view_evaluation.html:113
-#: .\plantillas\Item\item_details.html:94
-#: .\plantillas\Item\item_details.html:119 .\plantillas\form.html.py:40
-msgid "Create"
-msgstr "Crear"
-
-#: .\plantillas\Instance\view_evaluation.html:117
-#: .\plantillas\Item\item_details.html:98
-#: .\plantillas\Item\item_details.html:123 .\plantillas\Tag\list_tags.html:50
-#: .\plantillas\Tag\list_tags.html.py:74
-msgid "Close"
-msgstr "Cerrar"
 
 #: .\plantillas\Item\create_item.html:3
 msgid "Creation/Edition Item"
@@ -524,33 +541,47 @@ msgstr "Crear item para la etiqueta"
 msgid "Tags Tree"
 msgstr "Árbol de Etiquetas"
 
-#: .\plantillas\index.html:65 .\plantillas\index.html.py:69
-#: .\plantillas\index.html:72
+#: .\plantillas\form_signup.html:7
+#, fuzzy
+#| msgid "Sign up"
+msgid "Sign up with:"
+msgstr "Registrarse"
+
+#: .\plantillas\index.html:66 .\plantillas\index.html.py:70
+#: .\plantillas\index.html:73
 msgid "Audits"
 msgstr "Auditorías"
 
-#: .\plantillas\index.html:78
+#: .\plantillas\index.html:76
+msgid "Choose your role"
+msgstr "Elige tu rol"
+
+#: .\plantillas\index.html:79
+msgid "Sync with calendar"
+msgstr "Sincronizar con calendar"
+
+#: .\plantillas\index.html:85
 msgid "Language"
 msgstr "Idioma"
 
-#: .\plantillas\index.html:86 .\plantillas\welcome.html.py:3
+#: .\plantillas\index.html:93 .\plantillas\welcome.html.py:3
 #: .\plantillas\welcome.html:7
 msgid "Welcome"
 msgstr "Bienvenido"
 
-#: .\plantillas\index.html:87
+#: .\plantillas\index.html:94
 msgid "Log Out"
 msgstr "Desconectarse"
 
-#: .\plantillas\index.html:89
+#: .\plantillas\index.html:96
 msgid "Sign up"
 msgstr "Registrarse"
 
-#: .\plantillas\index.html:90 .\plantillas\login.html.py:28
+#: .\plantillas\index.html:97 .\plantillas\login.html.py:28
 msgid "Log In"
 msgstr "Autenticarse"
 
-#: .\plantillas\index.html:101
+#: .\plantillas\index.html:108
 msgid "Welcome to Audits"
 msgstr "Bienvenido a Auditorías"
 
@@ -566,6 +597,10 @@ msgstr ""
 "Lo sentimos pero no hay ninguna etiqueta que tenga items para evaluar. Por "
 "favor comprueba los items de las etiquetas de la auditoría"
 
+#: .\plantillas\login.html:33
+msgid "Log in with:"
+msgstr "Autentícate con:"
+
 #: .\plantillas\not_user_permission.html:3
 msgid "Not Permissions"
 msgstr "No tienes los permisos"
@@ -579,6 +614,9 @@ msgstr ""
 "Usted está en QAuditor, esta es una aplicación web en la cual usted puede "
 "manegar sus auditorías internas Esta aplicación es una alternativa fácil, "
 "cómoda y rápida de realizar sus auditorías internas."
+
+#~ msgid "Weakly"
+#~ msgstr "Semanalmente"
 
 #~ msgid "Admins"
 #~ msgstr "Administradores"
